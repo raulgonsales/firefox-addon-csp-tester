@@ -1,0 +1,13 @@
+.git
+.idea
+vendor
+storage/framework/cache/**
+storage/framework/sessions/**
+storage/framework/views/**
+DockerfileApp
+DockerfileWeb
+docker-compose.yml
+README.md
+.gitignore
+tests
+firefox-tests

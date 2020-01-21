@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+
+  #The application
+  app:
+    build:
+      context: ./tester-gui
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - /Users/bohdaninhliziian/no_sync/baka_proj/backup/tester-gui:/var/www/
+    container_name: app
+    restart: unless-stopped
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    networks:
+      - app-network
+
+  #The web server
+  nginx:
+    build:
+      context: ./tester-gui
+      dockerfile: docker/nginx/Dockerfile
+    volumes:
+      - /Users/bohdaninhliziian/no_sync/baka_proj/backup/tester-gui:/var/www/
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 998:80
+    networks:
+      - app-network
+
+  #The database
+  db:
+    image: mysql:5.7.22
+    tty: true
+    volumes:
+      - dbdata:/var/lib/mysql
+      - /Users/bohdaninhliziian/no_sync/baka_proj/backup/tester-gui/docker/mysql/my.cnf:/etc/mysql/my.cnf
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: 12345
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+  css-watcher:
+    build:
+      context: ./tester-gui
+      dockerfile: docker/css-watcher/Dockerfile
+    container_name: css-watcher
+    restart: unless-stopped
+    volumes:
+      - /Users/bohdaninhliziian/no_sync/baka_proj/backup/tester-gui:/var/www/
+      - /var/www/node_modules
+    ports:
+      - 999:8080
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./tester-backend
+      dockerfile: docker/backend/Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    volumes:
+      - /Users/bohdaninhliziian/no_sync/baka_proj/backup/tester-backend:/usr/src/app
+    ports:
+      - 996:5000
+    networks:
+      - app-network
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
