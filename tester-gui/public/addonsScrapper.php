@@ -78,7 +78,7 @@ do {
 } while ($page <= 1);
 
 function store_to_database(array $links) {
-	$url = 'nginx/store-links';
+	$url = 'nginx/api/store-links';
 
 	try {
 		$client = new \GuzzleHttp\Client();

@@ -20,7 +20,8 @@ class CreateAddonsTable extends Migration
             $table->string('file_name')->nullable()->unique();
             $table->string('img_name');
             $table->integer('users_count');
-            $table->string('csp_status')->nullable();
+            $table->string('csp_error_type')->nullable();
+            $table->string('csp_reports_count')->nullable();
             $table->boolean('firefox_recommend');
         });
     }

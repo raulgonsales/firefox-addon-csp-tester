@@ -23,8 +23,7 @@ class PostLinksController extends Controller
 				'file_name' => $addon['file_name'],
 				'img_name' => $addon['img_name'],
 				'users_count' => 1,
-				'firefox_recommend' => true,
-				'csp_status' => 'test'
+				'firefox_recommend' => true
 			];
 		}
 
