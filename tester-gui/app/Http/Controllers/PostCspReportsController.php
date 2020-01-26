@@ -9,6 +9,10 @@ class PostCspReportsController extends Controller
 {
 	public function store(Request $request)
 	{
+		if (!$request->isMethod('post')) {
+			throw new \BadMethodCallException();
+		}
+
 		$cspReportModel = new CspReport;
 
 		$incomingCspReport = $request->toArray()['csp-report'];

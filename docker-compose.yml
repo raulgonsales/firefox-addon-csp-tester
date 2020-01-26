@@ -57,7 +57,7 @@ services:
     container_name: css-watcher
     restart: unless-stopped
     volumes:
-      - /Users/bohdaninhliziian/no_sync/baka_proj/backup/tester-gui:/var/www/
+      - ./tester-gui:/var/www/
       - /var/www/node_modules
     ports:
       - 999:8080

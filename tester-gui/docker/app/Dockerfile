@@ -27,6 +27,14 @@ RUN  apt-get install -y iputils-ping libmcrypt-dev \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-enable mcrypt
 
+# XDEBUG
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
+# This needs in order to run xdebug from PhpStorm
+ENV PHP_IDE_CONFIG 'serverName=DockerApp'
+
+ADD docker/app/php.ini /usr/local/etc/php
+
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]

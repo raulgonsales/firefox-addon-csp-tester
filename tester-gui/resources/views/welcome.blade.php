@@ -50,7 +50,8 @@
                                                 class="btn btn-primary test-addon-button"
                                                 data-name="{{$addon['name']}}"
                                                 data-file="{{$addon['file_name']}}"
-                                                data-link="{{$firefoxLink . $addon['link']}}">
+                                                data-link="{{$firefoxLink . $addon['link']}}"
+                                                data-id="{{$addon['id']}}">
                                             Test addon
                                         </button>
                                         <a class="btn btn-primary" target="_blank" href="{{$firefoxLink . $addon['link']}}" role="button">Go to web page</a>
