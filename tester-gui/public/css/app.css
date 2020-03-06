@@ -471,8 +471,13 @@ textarea {
 }
 
 .control {
-  overflow: hidden;
   padding: 10px 20px;
+}
+
+.control:after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .control .buttons {
@@ -499,7 +504,7 @@ textarea {
   box-shadow: 0px 0px 17px -1px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   padding: 10px;
-  height: 130px;
+  height: 140px;
 }
 
 .addons-wrapper .addon-wrapper .addon .addon-content {
@@ -548,7 +553,43 @@ textarea {
   padding: 3px;
 }
 
+.addons-wrapper .addon-wrapper .addon .error-type {
+  color: #a4a4a4;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
 .addons-wrapper .addon-wrapper .addon .addon-icon {
   float: left;
+}
+
+.check-addon {
+  margin-top: 11px;
+  margin-left: 5px;
+  margin-right: 5px;
+  float: left;
+  cursor: pointer;
+}
+
+.check-addon:checked ~ .addon {
+  background: #b9c9ef;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-additional-info {
+  padding: 1rem;
+}
+
+#reportAllModal .modal-dialog {
+  position: relative;
+  display: table;
+  /* This is important */
+  overflow-y: auto;
+  overflow-x: auto;
+  width: auto;
+  min-width: 300px;
 }
 

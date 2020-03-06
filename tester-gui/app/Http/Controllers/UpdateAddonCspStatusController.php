@@ -30,6 +30,6 @@ class UpdateAddonCspStatusController extends Controller
 			}
 		}
 
-		return 'updated';
+		return $cspReportsCount > 0 ? 'Error found (' . $request->csp_error_type . '): CSP status updated' : 'No errors found';
 	}
 }

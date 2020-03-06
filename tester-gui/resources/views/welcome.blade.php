@@ -12,6 +12,7 @@
 
         <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
         <script type="text/javascript" src="{{mix('/js/app.js')}}"></script>
+        <script type="text/javascript" src="{{asset('/js/plotly-latest.min.js')}}"></script>
         <title>Laravel</title>
     </head>
     <body id="body">
@@ -21,8 +22,48 @@
         <section>
             <div class="control">
                 <div class="buttons">
-                    <button type="button" class="btn btn-primary">Test selected</button>
-                    <button type="button" class="btn btn-primary">Full test</button>
+                    <!-- Example single danger button -->
+                    <button class="btn btn-info" id="select_all_addons">Select all</button>
+                    <button class="btn btn-info" id="deselect_all_addons">Deselect all</button>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Filter
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="http://localhost:998?errorType=initial-error" class="dropdown-item test-selected" data-error-type="initial-error">initial-error</a>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Test selected
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item test-selected" data-error-type="initial-error">initial-error</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Full test
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item full-test" data-error-type="initial-error">initial-error</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Generate report
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item report-all" data-error-type="initial-error">For all</button>
+                            <button class="dropdown-item report-selected" data-error-type="initial-error">For selected</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-info hidden" id="show_all_report">Show report for all</button>
                 </div>
                 <div class="searchbox">
 {{--                    TODO bootstrap select--}}
@@ -34,6 +75,7 @@
             <div class="addons-wrapper">
                 @foreach($addons as $addon)
                     <div class="addon-wrapper">
+                        <input type="checkbox" class="check-addon" name="kek">
                         <div class="addon">
                             @if($addon['firefox_recommend'])
                                 <span class="badge badge-pill badge-warning">Recommended by Firefox</span>
@@ -58,10 +100,27 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="error-type">
+                                <p>
+                                    Error type:
+                                    <span class="error-type-content">
+                                        @if ($addon['csp_error_type'])
+                                            {{$addon['csp_error_type']}}
+                                            @if ($addon['csp_reports_count'])
+                                                ({{$addon['csp_reports_count']}})
+                                            @endif
+                                        @else
+                                            no errors
+                                        @endif
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         </section>
+        <div id="tester" style="width:600px;height:250px;"></div>
+        @include('reportAllModal')
     </body>
 </html>
