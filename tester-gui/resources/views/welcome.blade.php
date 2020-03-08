@@ -32,6 +32,8 @@
                         </button>
                         <div class="dropdown-menu">
                             <a href="http://localhost:998?errorType=initial-error" class="dropdown-item test-selected" data-error-type="initial-error">initial-error</a>
+                            <a href="http://localhost:998?errorType=no-errors" class="dropdown-item test-selected" data-error-type="no-errors">no-errors</a>
+                            <a href="http://localhost:998" class="dropdown-item test-selected">all</a>
                         </div>
                     </div>
 
