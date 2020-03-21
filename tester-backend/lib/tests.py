@@ -8,6 +8,6 @@ def initial_error_test(addon_file):
 
     browser = webdriver.Firefox()
     browser.install_addon('/usr/src/app/resources/addons/' + addon_file)
-    browser.get('http://172.19.0.6/test/page')
+    browser.get('http://172.19.0.2/test/page')
     browser.quit()
     display.stop()

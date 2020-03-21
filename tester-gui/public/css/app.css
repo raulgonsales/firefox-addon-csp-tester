@@ -468,6 +468,7 @@ textarea {
 
 * {
   font-family: "Inconsolata", monospace !important;
+  box-sizing: border-box;
 }
 
 .control {
@@ -561,6 +562,22 @@ textarea {
 
 .addons-wrapper .addon-wrapper .addon .addon-icon {
   float: left;
+}
+
+#sitesListModal .site-wrapper {
+  display: inline-block;
+  width: 19%;
+  padding: 0 10px;
+  height: 50px;
+  overflow: hidden;
+}
+
+#sitesListModal .site-wrapper .form-check {
+  vertical-align: middle;
+}
+
+#sitesListModal .site-wrapper .form-check .form-check-label {
+  vertical-align: middle;
 }
 
 .check-addon {

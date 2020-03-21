@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Addon;
+use App\Site;
 use Illuminate\Http\Request;
 
 class HomepageController extends Controller
@@ -27,6 +28,8 @@ class HomepageController extends Controller
 		} else {
 			$data['addons'] = Addon::all();
 		}
+
+        $data['sites'] = Site::all();
 
 		return response(view('welcome')->with($data));
 	}

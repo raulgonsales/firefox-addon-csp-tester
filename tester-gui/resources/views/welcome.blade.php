@@ -42,7 +42,8 @@
                             Test selected
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item test-selected" data-error-type="initial-error">initial-error</button>
+                            <button class="dropdown-item test-selected test-selected-initial-error" data-error-type="initial-error">initial-error</button>
+                            <button class="dropdown-item test-selected test-selected-content-scripts-analyzing" data-error-type="content-scripts-analyzing">content-scripts-analyzing</button>
                         </div>
                     </div>
 
@@ -124,5 +125,6 @@
         </section>
         <div id="tester" style="width:600px;height:250px;"></div>
         @include('reportAllModal')
+        @include('sitesListModal')
     </body>
 </html>

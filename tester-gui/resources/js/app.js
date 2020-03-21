@@ -1,4 +1,5 @@
 window.localStorage.setItem('selectedAddons', JSON.stringify({'addons': {}}));
+window.localStorage.setItem('selectedSites', JSON.stringify({'sites': {}}));
 
 jQuery( document ).ready(function( $ ) {
     $('[data-toggle="tooltip"]').tooltip({
@@ -19,27 +20,48 @@ jQuery( document ).ready(function( $ ) {
         }
     });
 
-    $('.test-selected').on('click', function () {
-        let errorType = $(this).data('error-type');
+    $('.test-selected.test-selected-initial-error').on('click', function () {
         let checkedAddons = JSON.parse(window.localStorage.getItem('selectedAddons')).addons;
 
         for (let id in checkedAddons) {
             if (checkedAddons.hasOwnProperty(id)) {
                 let addonInfo = checkedAddons[id];
-
                 console.log('Addon name: ' + addonInfo.name);
-                console.log(errorType + ' testing started.');
+                console.log('initial-error testing started.');
 
-                let response = testAddonBackendCall(addonInfo, errorType);
-
-                if (response === 'true') {
-                    console.log('Detecting CSP reports started.');
-                    updateCspErrorStatus(addonInfo.id, errorType);
-                }
+                testAddonBackendCall(addonInfo, 'initial-error');
+                console.log('Detecting CSP reports started.');
+                updateCspErrorStatus(addonInfo.id, 'initial-error');
 
                 console.log('------------------------------------------')
             }
         }
+    });
+
+    $('.test-selected.test-selected-content-scripts-analyzing').on('click', function () {
+        new Promise(function(resolve){
+            $("#sitesListModal").modal('show');
+            $('#sitesListModal .btn-confirm').click(function(){
+                resolve();
+            });
+        }).then(function(){
+            let checkedAddons = JSON.parse(window.localStorage.getItem('selectedAddons')).addons;
+
+            for (let addonId in checkedAddons) {
+                if (checkedAddons.hasOwnProperty(addonId)) {
+                    let addonInfo = checkedAddons[addonId];
+                    let checkedSites = JSON.parse(window.localStorage.getItem('selectedSites')).sites;
+
+                    console.log('--------- Analyze content scripts for ' + addonInfo.name + ' -------------');
+
+                    let response = analyzeAddonContentScript(addonInfo, checkedSites);
+                    console.log(response);
+
+                    saveContentScriptsInfo(response, addonId);
+                    console.log('Content script from addon successfully analyzed');
+                }
+            }
+        });
     });
 
     $('.report-all').on('click', function () {
@@ -61,6 +83,18 @@ jQuery( document ).ready(function( $ ) {
         }
 
         window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+    });
+
+    $('.site-checkbox').on('change', function () {
+        let selectedSitesStorage = JSON.parse(window.localStorage.getItem('selectedSites'));
+
+        if (this.checked) {
+            selectedSitesStorage.sites[$(this).data('id')] = $(this).data('matching-url');
+        } else {
+            delete selectedSitesStorage.sites[$(this).data('id')];
+        }
+
+        window.localStorage.setItem('selectedSites', JSON.stringify(selectedSitesStorage));
     });
 
     $('#select_all_addons').on('click', function () {
@@ -117,6 +151,46 @@ function updateCspErrorStatus(addon_id, cspErrorType) {
     .done(function( msg ) {
         console.log(msg);
     });
+}
+
+function saveContentScriptsInfo(data, addonId) {
+    $.ajax({
+        async: false,
+        method: "POST",
+        url: "http://localhost:996/save-content-scripts-info",
+        data: {
+            data: data,
+            addon_id: addonId
+        },
+        datatype: 'application/json',
+        crossDomain: true
+    })
+    .done(function( msg ) {
+        console.log(msg);
+    });
+}
+
+function analyzeAddonContentScript(addonInfo, sitesMatching) {
+    let response = '';
+
+    $.ajax({
+        async: false,
+        method: "POST",
+        url: "http://localhost:996/test/content-scripts-analyzing",
+        data: {
+            name: addonInfo.name,
+            file: addonInfo.file,
+            link: addonInfo.link,
+            sites_matching: JSON.stringify(sitesMatching)
+        },
+        datatype: 'application/json',
+        crossDomain: true
+    })
+    .done(function( msg ) {
+        response = msg;
+    });
+
+    return response;
 }
 
 function testAddonBackendCall(addonInfo, cspErrorType) {

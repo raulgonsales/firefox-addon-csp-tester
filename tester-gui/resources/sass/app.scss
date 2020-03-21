@@ -2,6 +2,7 @@
 
 * {
   font-family: 'Inconsolata', monospace !important;
+    box-sizing: border-box;
 }
 
 .control {
@@ -97,6 +98,25 @@
       }
     }
   }
+}
+
+#sitesListModal {
+    .site-wrapper {
+        display: inline-block;
+        width: 19%;
+        padding: 0 10px;
+        height: 50px;
+        overflow: hidden;
+
+        .form-check {
+            vertical-align: middle;
+
+            .form-check-label {
+                vertical-align: middle;
+
+            }
+        }
+    }
 }
 
 .check-addon {
