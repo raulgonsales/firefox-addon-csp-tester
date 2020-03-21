@@ -13,19 +13,14 @@ def analyze(addon_file, sites_matching):
 
     unzipped_addon_path = '/usr/src/app/resources/addons/unziped/' + addon_file
 
-    if 'content_scripts' not in json_object:
-        shutil.rmtree(unzipped_addon_path)
-        return jsonify(
-            {
-                "use_content_scripts": False
-            }
-        )
-
     sites_info = {}
 
     for site_id in sites_matching:
         matching_url = sites_matching[site_id]
         sites_info[site_id] = False
+
+        if 'content_scripts' not in json_object:
+            continue
 
         content_scripts = []
         for content_script_item in json_object['content_scripts']:
