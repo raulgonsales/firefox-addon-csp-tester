@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Models\Collections\Exceptions;
 
+use Exception;
 
-class CollectionCreatingException
+class CollectionCreatingException extends Exception
 {
-
 }

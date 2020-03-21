@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Collections\Items;
+namespace App\Models\Collections\AddonSiteItems;
 
-use App\Models\Collections\SignTypeEnum;
+use App\Models\Collections\Enum\SignTypeEnum;
 
 class Sign
 {

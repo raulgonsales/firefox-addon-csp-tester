@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Collections;
+namespace App\Models\Collections\Enum;
 
 use BenSampo\Enum\Enum;
 

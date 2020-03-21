@@ -1,46 +1,57 @@
 <?php
 
-namespace App\Models\Collections\Items;
+namespace App\Models\Collections\AddonSiteItems;
 
 use App\Models\Collections\ScriptsInfoCollection;
+use App\Models\Collections\CollectionFactory;
 
 class SiteInfo
 {
     /** @var integer */
+    private $siteId;
+
+    /** @var integer|null */
     private $contentScriptsCount;
 
-    /** @var integer */
+    /** @var integer|null */
     private $contentScriptsCountWithSigns;
 
-    /** @var ScriptsInfoCollection */
-    private $scriptsInfo;
+    /** @var ScriptsInfoCollection|null */
+    private $scriptsInfoCollection;
 
     /**
-     * @param int $contentScriptsCount
-     * @param int $contentScriptsCountWithSigns
-     * @param ScriptsInfoCollection $scriptsInfo
+     * @param int $siteId
+     * @param int|null $contentScriptsCount
+     * @param int|null $contentScriptsCountWithSigns
+     * @param ScriptsInfoCollection|null $scriptsInfoCollection
      */
     public function __construct(
-        int $contentScriptsCount,
-        int $contentScriptsCountWithSigns,
-        ScriptsInfoCollection $scriptsInfo
+        int $siteId,
+        ?int $contentScriptsCount,
+        ?int $contentScriptsCountWithSigns,
+        ?ScriptsInfoCollection $scriptsInfoCollection
     )
     {
+        $this->siteId = $siteId;
         $this->contentScriptsCount = $contentScriptsCount;
         $this->contentScriptsCountWithSigns = $contentScriptsCountWithSigns;
-        $this->scriptsInfo = $scriptsInfo;
+        $this->scriptsInfoCollection = $scriptsInfoCollection;
     }
 
     /**
-     * @param array $data
+     * @param array|null $data
+     * @param int $siteId
      * @return SiteInfo
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(?array $data, int $siteId): self
     {
         return new self(
-            $data['content_scripts_count'],
-            $data['content_scripts_count_with_signs'],
-            ScriptsInfoCollection::createFromArray($data['scripts_info'])
+            $siteId,
+            $data['content_scripts_count'] ?? null,
+            $data['content_scripts_count_with_signs'] ?? null,
+            isset($data['scripts_info'])
+                ? CollectionFactory::createScriptsInfoCollection($data['scripts_info'])
+                : null
         );
     }
 }

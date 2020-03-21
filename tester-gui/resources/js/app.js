@@ -52,13 +52,7 @@ jQuery( document ).ready(function( $ ) {
                     let addonInfo = checkedAddons[addonId];
                     let checkedSites = JSON.parse(window.localStorage.getItem('selectedSites')).sites;
 
-                    console.log('--------- Analyze content scripts for ' + addonInfo.name + ' -------------');
-
-                    let response = analyzeAddonContentScript(addonInfo, checkedSites);
-                    console.log(response);
-
-                    saveContentScriptsInfo(response, addonId);
-                    console.log('Content script from addon successfully analyzed');
+                    analyzeAddonContentScript(addonInfo, checkedSites);
                 }
             }
         });
@@ -155,9 +149,8 @@ function updateCspErrorStatus(addon_id, cspErrorType) {
 
 function saveContentScriptsInfo(data, addonId) {
     $.ajax({
-        async: false,
         method: "POST",
-        url: "http://localhost:996/save-content-scripts-info",
+        url: "http://localhost:998/api/save-content-scripts-info",
         data: {
             data: data,
             addon_id: addonId
@@ -171,10 +164,7 @@ function saveContentScriptsInfo(data, addonId) {
 }
 
 function analyzeAddonContentScript(addonInfo, sitesMatching) {
-    let response = '';
-
     $.ajax({
-        async: false,
         method: "POST",
         url: "http://localhost:996/test/content-scripts-analyzing",
         data: {
@@ -184,13 +174,16 @@ function analyzeAddonContentScript(addonInfo, sitesMatching) {
             sites_matching: JSON.stringify(sitesMatching)
         },
         datatype: 'application/json',
-        crossDomain: true
+        crossDomain: true,
+        beforeSend: function () {
+            console.log('--------- Analyze content scripts for ' + addonInfo.name + ' -------------');
+        }
     })
-    .done(function( msg ) {
-        response = msg;
+    .done(function( response ) {
+        console.log(response);
+        console.log('Content script for ' + addonInfo.name + ' successfully analyzed');
+        saveContentScriptsInfo(response, addonInfo.id);
     });
-
-    return response;
 }
 
 function testAddonBackendCall(addonInfo, cspErrorType) {
