@@ -38,10 +38,10 @@ class AddonsForSitesController extends Controller
 
         /** @var SiteInfo $siteInfo */
         foreach ($sitesInfoCollection as $siteInfo) {
-            $addon->sites()->attach($siteInfo->getSiteId(), [
+            $addon->sites()->sync([$siteInfo->getSiteId(), [
                 'content_scripts_count' => $siteInfo->getContentScriptsCount(),
                 'content_scripts_count_with_signs' => $siteInfo->getContentScriptsCountWithSigns()
-            ]);
+            ]]);
         }
     }
 }
