@@ -54,4 +54,36 @@ class SiteInfo
                 : null
         );
     }
+
+    /**
+     * @return int
+     */
+    public function getSiteId(): int
+    {
+        return $this->siteId;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getContentScriptsCount(): ?int
+    {
+        return $this->contentScriptsCount;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getContentScriptsCountWithSigns(): ?int
+    {
+        return $this->contentScriptsCountWithSigns;
+    }
+
+    /**
+     * @return ScriptsInfoCollection|null
+     */
+    public function getScriptsInfoCollection(): ?ScriptsInfoCollection
+    {
+        return $this->scriptsInfoCollection;
+    }
 }
