@@ -11,7 +11,7 @@ class ScriptsInfoCollection extends \ArrayObject
         $collection = new self();
 
         foreach ($scriptsInfo as $scriptsInfoItemPath => $scriptsInfoItem) {
-            if (!is_array($scriptsInfoItem)) {
+            if (!is_array($scriptsInfoItem) && !($scriptsInfoItem instanceof \stdClass)) {
                 $scriptsInfoItem = null;
             }
 

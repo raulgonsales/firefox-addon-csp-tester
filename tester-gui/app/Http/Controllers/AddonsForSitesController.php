@@ -11,7 +11,7 @@ use Throwable;
 
 class AddonsForSitesController extends Controller
 {
-    public function insert(Request $request): void
+    public function insert(Request $request)
     {
         if (!$request->isMethod('post')) {
             throw new \BadMethodCallException();
@@ -27,21 +27,25 @@ class AddonsForSitesController extends Controller
             $sitesInfoCollection = CollectionFactory::createAddonSiteInfoCollection($request->data);
         } catch (Throwable $e) {
             $sitesInfoCollection = null;
-
             throw new Exception("AddonId: " . $request->addon_id . '.' . $e->getMessage());
         }
 
-
         if ($sitesInfoCollection === null || $sitesInfoCollection->count() === 0) {
-            return;
+            return false;
         }
 
         /** @var SiteInfo $siteInfo */
         foreach ($sitesInfoCollection as $siteInfo) {
-            $addon->sites()->sync([$siteInfo->getSiteId(), [
-                'content_scripts_count' => $siteInfo->getContentScriptsCount(),
-                'content_scripts_count_with_signs' => $siteInfo->getContentScriptsCountWithSigns()
-            ]]);
+            $addon->sites()->sync([
+                $siteInfo->getSiteId(),
+                [
+                    'content_scripts_count' => $siteInfo->getContentScriptsCount(),
+                    'content_scripts_count_with_signs' => $siteInfo->getContentScriptsCountWithSigns(),
+                    'scripts_info' => json_encode($request->data[$siteInfo->getSiteId()]['scripts_info'])
+                ]
+            ]);
         }
+
+        return response()->json(['success' => 'success'], 200);
     }
 }

@@ -18,7 +18,7 @@ class CreateAddonSiteTable extends Migration
             $table->bigInteger('site_id')->unsigned();
             $table->string('content_scripts_count')->nullable();
             $table->string('content_scripts_count_with_signs')->nullable();
-            $table->string('scripts_info')->nullable();
+            $table->text('scripts_info')->nullable();
         });
 
         Schema::table('addon_site', function($table) {
