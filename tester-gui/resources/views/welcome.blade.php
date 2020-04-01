@@ -17,12 +17,8 @@
     </head>
     <body id="body">
         <header>
-            Test
-        </header>
-        <section>
             <div class="control">
                 <div class="buttons">
-                    <!-- Example single danger button -->
                     <button class="btn btn-info" id="select_all_addons">Select all</button>
                     <button class="btn btn-info" id="deselect_all_addons">Deselect all</button>
 
@@ -67,14 +63,18 @@
                     </div>
 
                     <button class="btn btn-info hidden" id="show_all_report">Show report for all</button>
+
+                    <a class="btn btn-success" href="/sites-addons-report">Show report for all</a>
                 </div>
                 <div class="searchbox">
-{{--                    TODO bootstrap select--}}
+                    {{--                    TODO bootstrap select--}}
                     <div class="active-cyan-3 active-cyan-4 mb-4">
                         <input class="form-control" type="text" placeholder="Search addon" aria-label="Search">
                     </div>
                 </div>
             </div>
+        </header>
+        <section>
             <div class="addons-wrapper">
                 @foreach($addons as $addon)
                     <div class="addon-wrapper">
