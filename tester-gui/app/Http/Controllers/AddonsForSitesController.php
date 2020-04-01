@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Addon;
 use App\Models\Collections\AddonSiteItems\SiteInfo;
+use App\Site;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Collections\CollectionFactory;
@@ -48,5 +49,22 @@ class AddonsForSitesController extends Controller
         }
 
         return response()->json(['success' => 'success'], 200);
+    }
+
+    public function get(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            throw new \BadMethodCallException();
+        }
+
+        if (!isset($request->sites_ids) || !isset($request->addons_ids)) {
+            throw new Exception('Bad data provided to get addon site info');
+        }
+
+        if ($request->sites_ids === 'all' && $request->addons_ids === 'all') {
+            $test = Site::all()->load('relatedAddons');
+
+            return response()->json($test);
+        }
     }
 }
