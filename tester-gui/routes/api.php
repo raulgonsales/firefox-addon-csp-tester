@@ -18,8 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('store-links', 'PostLinksController@store')->name('test');
-Route::post('store-csp-reports', 'PostCspReportsController@store');
-Route::post('update-addon-csp-status', 'UpdateAddonCspStatusController@update');
+Route::post('store-csp-reports/{test_type}/{addon_id}', 'PostCspReportsController@store');
 Route::post('save-content-scripts-info', 'AddonsForSitesController@insert');
 
 Route::get('report-for-all', 'ReportController@getForAll');

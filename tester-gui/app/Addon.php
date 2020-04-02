@@ -12,4 +12,9 @@ class Addon extends Model
     {
         return $this->belongsToMany(Site::class, 'addon_site');
     }
+
+    public function cspReports()
+    {
+        return $this->hasMany(CspReport::class);
+    }
 }

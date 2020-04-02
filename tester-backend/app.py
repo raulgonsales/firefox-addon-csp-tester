@@ -27,10 +27,11 @@ def test_addon():
     addon_name = request.form['name']
     addon_link = request.form['link']
     addon_file = request.form['file']
+    addon_id = request.form['id']
 
-    logger.debug('DEBUG REQUEST: Initial error for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
+    # logger.debug('DEBUG REQUEST: Initial error for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
-    tests.initial_error_test(addon_file)
+    tests.initial_error_test(addon_file, addon_id)
 
     resp = make_response('true')
     resp.headers['Access-Control-Allow-Origin'] = '*'
@@ -47,7 +48,7 @@ def analyze_addons_content_scripts():
     addon_file = request.form['file']
     sites_matching = request.form['sites_matching']
 
-    logger.debug('DEBUG REQUEST: Content script analyzing for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
+    # logger.debug('DEBUG REQUEST: Content script analyzing for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
     try:
         response = content_script_analyzer.analyze(addon_file, json.loads(sites_matching))

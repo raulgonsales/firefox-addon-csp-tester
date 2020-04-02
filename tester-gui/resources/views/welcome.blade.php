@@ -105,13 +105,10 @@
                             </div>
                             <div class="error-type">
                                 <p>
-                                    Error type:
+                                    CSP reports count:
                                     <span class="error-type-content">
-                                        @if ($addon['csp_error_type'])
-                                            {{$addon['csp_error_type']}}
-                                            @if ($addon['csp_reports_count'])
-                                                ({{$addon['csp_reports_count']}})
-                                            @endif
+                                        @if(count($addon->cspReports) > 0)
+                                            {{count($addon->cspReports)}}
                                         @else
                                             no errors
                                         @endif

@@ -110,13 +110,10 @@ jQuery(document).ready(function ($) {
     var addonInfo = {
       'name': $(this).data('name'),
       'file': $(this).data('file'),
-      'link': $(this).data('link')
+      'link': $(this).data('link'),
+      'id': $(this).data('id')
     };
-    var response = testAddonBackendCall(addonInfo, 'initial-error');
-
-    if (response === 'true') {
-      updateCspErrorStatus($(this).data('id'), 'initial-error');
-    }
+    testAddonBackendCall(addonInfo, 'initial-error');
   });
   $('.test-selected.test-selected-initial-error').on('click', function () {
     var checkedAddons = JSON.parse(window.localStorage.getItem('selectedAddons')).addons;
@@ -127,9 +124,6 @@ jQuery(document).ready(function ($) {
         console.log('Addon name: ' + addonInfo.name);
         console.log('initial-error testing started.');
         testAddonBackendCall(addonInfo, 'initial-error');
-        console.log('Detecting CSP reports started.');
-        updateCspErrorStatus(addonInfo.id, 'initial-error');
-        console.log('------------------------------------------');
       }
     }
   });
@@ -210,28 +204,6 @@ function getAddonInfoFromCheckbox(checkbox) {
     'link': addonTestButton.data('link')
   };
 }
-/**
- * Updates csp error status for addon
- * @param addon_id
- * @param cspErrorType
- */
-
-
-function updateCspErrorStatus(addon_id, cspErrorType) {
-  $.ajax({
-    async: false,
-    method: "POST",
-    url: "http://localhost:998/api/update-addon-csp-status",
-    data: {
-      addon_id: addon_id,
-      csp_error_type: cspErrorType
-    },
-    datatype: 'application/json',
-    crossDomain: true
-  }).done(function (msg) {
-    console.log(msg);
-  });
-}
 
 function saveContentScriptsInfo(data, addonId) {
   $.ajax({
@@ -271,7 +243,6 @@ function analyzeAddonContentScript(addonInfo, sitesMatching) {
 }
 
 function testAddonBackendCall(addonInfo, cspErrorType) {
-  var response = '';
   $.ajax({
     async: false,
     method: "POST",
@@ -279,14 +250,14 @@ function testAddonBackendCall(addonInfo, cspErrorType) {
     data: {
       name: addonInfo.name,
       file: addonInfo.file,
-      link: addonInfo.link
+      link: addonInfo.link,
+      id: addonInfo.id
     },
     datatype: 'application/json',
     crossDomain: true
   }).done(function (msg) {
-    response = msg;
+    console.log(msg);
   });
-  return response;
 }
 
 function getReportForAll() {

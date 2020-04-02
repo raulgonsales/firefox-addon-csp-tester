@@ -53,11 +53,7 @@ class AddonsForSitesController extends Controller
 
     public function showAll(Request $request)
     {
-        $sites = Site::all();
-
-        foreach ($sites as $site) {
-            $site->load('relatedAddons');
-        }
+        $sites = Site::all()->load('relatedAddons');
 
         return response(
             view('sitesAddonsReport')->with([
