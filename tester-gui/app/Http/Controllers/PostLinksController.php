@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Addon;
+use Exception;
 use Illuminate\Http\Request;
 
 class PostLinksController extends Controller
@@ -15,18 +16,12 @@ class PostLinksController extends Controller
 
         $addonsInfoBatch = $request->all();
 
-        $batch = [];
-        foreach ($addonsInfoBatch as $addon) {
-            $batch[] = [
-                'name' => $addon['name'],
-                'link' => $addon['link'],
-                'file_name' => $addon['file_name'],
-                'img_name' => $addon['img_name'],
-                'users_count' => 1,
-                'firefox_recommend' => true
-            ];
+        foreach ($addonsInfoBatch as $item) {
+            try {
+                Addon::insert($item);
+            } catch(Exception $exception) {
+                continue;
+            }
         }
-
-        Addon::insert($batch);
     }
 }

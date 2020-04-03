@@ -119,6 +119,7 @@
                     </div>
                 @endforeach
             </div>
+            {{ $addons->links() }}
         </section>
         <div id="tester" style="width:600px;height:250px;"></div>
         @include('reportAllModal')

@@ -26,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
         \DB::listen(function ($query) {
             dump([
                 $query->sql,
-                $query->bindings,
                 $query->time
             ]);
         });

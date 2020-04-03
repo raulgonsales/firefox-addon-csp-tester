@@ -1,5 +1,5 @@
 <?php
-
+set_time_limit(200);
 require '../vendor/simple-html-dom/simple-html-dom/simple_html_dom.php';
 require '../vendor/autoload.php';
 
@@ -62,20 +62,29 @@ do {
 		$addon_info = [
 			'name' => $list_item->find('a.SearchResult-link', 0)->innertext,
 			'link' => $addon_link,
-			'file_name' => $fileName ?? null,
+			'file_name' => strtolower(implode('_', explode(' ', preg_replace('/[^\da-z ]/i', '', $addon_name)))) . '_' . md5($addon_link) . '.xpi',
 			'img_name' => $list_item->find('img.SearchResult-icon', 0)->getAttribute('src'),
-			'users_count' => $list_item->find('span.SearchResult-users-text', 0)->innertext,
-			'firefox_recommend' => $list_item->find('span.RecommendedBadge-label', 0) ? true : false,
-			'author' => 1
+			'users_count' => (integer)preg_replace("/[^0-9]/", '', $list_item->find('span.SearchResult-users-text', 0)->innertext),
+			'firefox_recommend' => $list_item->find('span.RecommendedBadge-label', 0) ? true : false
 		];
 
 		$links_batch[] = $addon_info;
 	}
 
-	store_to_database($links_batch);
+	try {
+        store_to_database($links_batch);
+    } catch(Exception $e) {
+        echo $e->getMessage() . '<br>';
+        $not_stored[] = $links_batch;
+        $fp = fopen('not_stored.json', 'w');
+        fwrite($fp, '');
+        fwrite($fp, json_encode($not_stored, JSON_PRETTY_PRINT));
+        fclose($fp);
+    }
 
+	echo $page . '<br>';
 	$page++;
-} while ($page <= 1);
+} while ($page <= 747);
 
 function store_to_database(array $links) {
 	$url = 'nginx/api/store-links';
@@ -88,6 +97,6 @@ function store_to_database(array $links) {
 
 		print_r($response->getBody()->getContents());
 	} catch (Exception $e) {
-		echo $e->getMessage();
+        throw $e;
 	}
 }

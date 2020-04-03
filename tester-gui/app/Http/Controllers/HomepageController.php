@@ -15,6 +15,8 @@ class HomepageController extends Controller
         'no-errors'
     ];
 
+    const PAGINATE_ITEM_PER_PAGE = 100;
+
     public function show(Request $request)
     {
         $data['firefoxLink'] = self::FIREFOX_ADDONS_LINK;
@@ -26,7 +28,9 @@ class HomepageController extends Controller
                 $data['addons'] = Addon::where('csp_error_type', $request->errorType)->get();
             }
         } else {
-            $data['addons'] = Addon::all()->load('cspReports');
+            $paginateAddons = Addon::paginate(self::PAGINATE_ITEM_PER_PAGE);
+            $paginateAddons->load('cspReports');
+            $data['addons'] = $paginateAddons;
         }
 
         $data['sites'] = Site::all();
