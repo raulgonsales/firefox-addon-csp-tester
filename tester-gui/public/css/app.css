@@ -611,7 +611,6 @@ textarea {
 }
 
 .pagination {
-    -webkit-box-pack: center!important;
-    -ms-flex-pack: center!important;
-    justify-content: center!important;
+  -webkit-box-pack: center !important;
+  justify-content: center !important;
 }

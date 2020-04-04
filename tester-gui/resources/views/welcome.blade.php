@@ -77,8 +77,18 @@
         <section>
             <div class="addons-wrapper">
                 @foreach($addons as $addon)
-                    <div class="addon-wrapper">
-                        <input type="checkbox" class="check-addon" name="kek">
+                    <div class="addon-wrapper" id="addon_item_{{$addon['id']}}">
+                        <input type="checkbox" class="check-addon" name="kek" id="addon_checkbox_{{$addon['id']}}">
+                        <script type="text/javascript">
+                            // script for autoselect addon which was selected before reload of the page
+                            var addonId = {!! $addon['id'] !!};
+                            if (window.sessionStorage.getItem('selectedAddons') !== null) { //if no addons were selected
+                                let selectedAddons = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
+                                if (selectedAddons.addons.hasOwnProperty(addonId)) {
+                                    document.getElementById('addon_checkbox_' + addonId).checked = true;
+                                }
+                            }
+                        </script>
                         <div class="addon">
                             @if($addon['firefox_recommend'])
                                 <span class="badge badge-pill badge-warning">Recommended by Firefox</span>

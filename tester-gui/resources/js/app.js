@@ -1,4 +1,3 @@
-window.localStorage.setItem('selectedAddons', JSON.stringify({'addons': {}}));
 window.localStorage.setItem('selectedSites', JSON.stringify({'sites': {}}));
 
 jQuery( document ).ready(function( $ ) {
@@ -60,7 +59,11 @@ jQuery( document ).ready(function( $ ) {
     });
 
     $('.check-addon').on('change', function () {
-        let selectedAddonsStorage = JSON.parse(window.localStorage.getItem('selectedAddons'));
+        if (window.sessionStorage.getItem('selectedAddons') === null) {
+            window.sessionStorage.setItem('selectedAddons', JSON.stringify({'addons': {}}));
+        }
+
+        let selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
         let checkedAddon = getAddonInfoFromCheckbox(this);
 
         if (this.checked) {
@@ -69,7 +72,7 @@ jQuery( document ).ready(function( $ ) {
             delete selectedAddonsStorage.addons[checkedAddon.id];
         }
 
-        window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+        window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
     });
 
     $('.site-checkbox').on('change', function () {
@@ -88,10 +91,14 @@ jQuery( document ).ready(function( $ ) {
         $('.check-addon').each(function () {
             this.checked = true;
 
-            let selectedAddonsStorage = JSON.parse(window.localStorage.getItem('selectedAddons'));
+            if (window.sessionStorage.getItem('selectedAddons') === null) {
+                window.sessionStorage.setItem('selectedAddons', JSON.stringify({'addons': {}}));
+            }
+
+            let selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
             let checkedAddon = getAddonInfoFromCheckbox(this);
             selectedAddonsStorage.addons[checkedAddon.id] = checkedAddon;
-            window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+            window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
         });
     });
 
@@ -99,9 +106,16 @@ jQuery( document ).ready(function( $ ) {
         $('.check-addon').each(function () {
             this.checked = false;
 
-            let selectedAddonsStorage = JSON.parse(window.localStorage.getItem('selectedAddons'));
-            selectedAddonsStorage.addons = {};
-            window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+            if (window.sessionStorage.getItem('selectedAddons') === null) {
+                return false;
+            }
+
+            let selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
+            let checkedAddon = getAddonInfoFromCheckbox(this);
+            if (selectedAddonsStorage.addons.hasOwnProperty(checkedAddon.id)) {
+                delete selectedAddonsStorage.addons[checkedAddon.id];
+            }
+            window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
         });
     });
 });

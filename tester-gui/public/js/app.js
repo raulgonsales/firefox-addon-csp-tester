@@ -93,9 +93,6 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-window.localStorage.setItem('selectedAddons', JSON.stringify({
-  'addons': {}
-}));
 window.localStorage.setItem('selectedSites', JSON.stringify({
   'sites': {}
 }));
@@ -153,7 +150,13 @@ jQuery(document).ready(function ($) {
     $('#reportAllModal').modal('toggle');
   });
   $('.check-addon').on('change', function () {
-    var selectedAddonsStorage = JSON.parse(window.localStorage.getItem('selectedAddons'));
+    if (window.sessionStorage.getItem('selectedAddons') === null) {
+      window.sessionStorage.setItem('selectedAddons', JSON.stringify({
+        'addons': {}
+      }));
+    }
+
+    var selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
     var checkedAddon = getAddonInfoFromCheckbox(this);
 
     if (this.checked) {
@@ -162,7 +165,7 @@ jQuery(document).ready(function ($) {
       delete selectedAddonsStorage.addons[checkedAddon.id];
     }
 
-    window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+    window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
   });
   $('.site-checkbox').on('change', function () {
     var selectedSitesStorage = JSON.parse(window.localStorage.getItem('selectedSites'));
@@ -178,18 +181,35 @@ jQuery(document).ready(function ($) {
   $('#select_all_addons').on('click', function () {
     $('.check-addon').each(function () {
       this.checked = true;
-      var selectedAddonsStorage = JSON.parse(window.localStorage.getItem('selectedAddons'));
+
+      if (window.sessionStorage.getItem('selectedAddons') === null) {
+        window.sessionStorage.setItem('selectedAddons', JSON.stringify({
+          'addons': {}
+        }));
+      }
+
+      var selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
       var checkedAddon = getAddonInfoFromCheckbox(this);
       selectedAddonsStorage.addons[checkedAddon.id] = checkedAddon;
-      window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+      window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
     });
   });
   $('#deselect_all_addons').on('click', function () {
     $('.check-addon').each(function () {
       this.checked = false;
-      var selectedAddonsStorage = JSON.parse(window.localStorage.getItem('selectedAddons'));
-      selectedAddonsStorage.addons = {};
-      window.localStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+
+      if (window.sessionStorage.getItem('selectedAddons') === null) {
+        return false;
+      }
+
+      var selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
+      var checkedAddon = getAddonInfoFromCheckbox(this);
+
+      if (selectedAddonsStorage.addons.hasOwnProperty(checkedAddon.id)) {
+        delete selectedAddonsStorage.addons[checkedAddon.id];
+      }
+
+      window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
     });
   });
 });
