@@ -59,8 +59,6 @@ services:
     volumes:
       - ./tester-gui:/var/www/
       - /var/www/node_modules
-    ports:
-      - 999:8080
     networks:
       - app-network
 
