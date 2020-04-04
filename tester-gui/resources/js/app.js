@@ -102,21 +102,31 @@ jQuery( document ).ready(function( $ ) {
         });
     });
 
-    $('#deselect_all_addons').on('click', function () {
-        $('.check-addon').each(function () {
-            this.checked = false;
+    $('.addons-deselect-button').on('click', function () {
+        if ($(this).data('type') === 'current') {
+            $('.check-addon').each(function () {
+                this.checked = false;
 
-            if (window.sessionStorage.getItem('selectedAddons') === null) {
-                return false;
-            }
+                if (window.sessionStorage.getItem('selectedAddons') === null) {
+                    return false;
+                }
 
-            let selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
-            let checkedAddon = getAddonInfoFromCheckbox(this);
-            if (selectedAddonsStorage.addons.hasOwnProperty(checkedAddon.id)) {
-                delete selectedAddonsStorage.addons[checkedAddon.id];
-            }
-            window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
-        });
+                let selectedAddonsStorage = JSON.parse(window.sessionStorage.getItem('selectedAddons'));
+                let checkedAddon = getAddonInfoFromCheckbox(this);
+                if (selectedAddonsStorage.addons.hasOwnProperty(checkedAddon.id)) {
+                    delete selectedAddonsStorage.addons[checkedAddon.id];
+                }
+                window.sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddonsStorage));
+            });
+        } else if ($(this).data('type') === 'all') {
+            $('.check-addon').each(function () {
+                this.checked = false;
+
+                if (window.sessionStorage.getItem('selectedAddons') !== null) {
+                    window.sessionStorage.removeItem('selectedAddons');
+                }
+            });
+        }
     });
 });
 

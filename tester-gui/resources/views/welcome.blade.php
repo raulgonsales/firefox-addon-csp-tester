@@ -20,7 +20,15 @@
             <div class="control">
                 <div class="buttons">
                     <button class="btn btn-info" id="select_all_addons">Select all</button>
-                    <button class="btn btn-info" id="deselect_all_addons">Deselect all</button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Deselect all
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item addons-deselect-button" data-type="current">Current page</button>
+                            <button class="dropdown-item addons-deselect-button" data-type="all">Through all pages</button>
+                        </div>
+                    </div>
 
                     <div class="btn-group">
                         <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
