@@ -30,10 +30,14 @@ $capsule->addConnection([
     'password' => env('DB_PASSWORD'),
 ]);
 $capsule->setAsGlobal();
-$capsule::table('addons')->orderBy('id')->chunk(100, function($addons) use ($base_host, $addonsDir, $s3) {
+
+$chunkCounter = 1;
+$not_stored = [];
+$capsule::table('addons')->orderBy('id')->chunk(100, function($addons) use ($base_host, $addonsDir, $s3, &$chunkCounter, &$not_stored) {
     foreach ($addons as $addon) {
         $addon_page = file_get_html($base_host . $addon->link);
         if (!$addon_page) {
+            $not_stored[] = $addon->id;
             continue;
         }
 
@@ -52,6 +56,7 @@ $capsule::table('addons')->orderBy('id')->chunk(100, function($addons) use ($bas
             is_null($fileUrl)
             || file_put_contents('./addons/' . $addon->file_name, fopen($fileUrl, 'r')) === false
         ) {
+            $not_stored[] = $addon->id;
             continue;
         }
 
@@ -72,5 +77,15 @@ $capsule::table('addons')->orderBy('id')->chunk(100, function($addons) use ($bas
             unlink($addonsDir . $addon->file_name);
         }
     }
-    die();
+
+    $chunkCounter++;
+    if ($chunkCounter === 50) {
+        die();
+    }
 });
+
+if (!empty($not_stored)) {
+    $fp = fopen('not_stored.json', 'w');
+    fwrite($fp, json_encode($not_stored, JSON_PRETTY_PRINT));
+    fclose($fp);
+}
