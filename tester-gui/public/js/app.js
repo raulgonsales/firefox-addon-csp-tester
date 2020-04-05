@@ -113,7 +113,7 @@ jQuery(document).ready(function ($) {
     testAddonBackendCall(addonInfo, 'initial-error');
   });
   $('.test-selected.test-selected-initial-error').on('click', function () {
-    var checkedAddons = JSON.parse(window.localStorage.getItem('selectedAddons')).addons;
+    var checkedAddons = JSON.parse(window.sessionStorage.getItem('selectedAddons')).addons;
 
     for (var id in checkedAddons) {
       if (checkedAddons.hasOwnProperty(id)) {
@@ -274,7 +274,6 @@ function analyzeAddonContentScript(addonInfo, sitesMatching) {
 
 function testAddonBackendCall(addonInfo, cspErrorType) {
   $.ajax({
-    async: false,
     method: "POST",
     url: "http://localhost:996/test/" + cspErrorType,
     data: {
