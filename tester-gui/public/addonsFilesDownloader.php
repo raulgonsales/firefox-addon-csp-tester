@@ -1,7 +1,7 @@
-<?php set_time_limit(200);
+<?php set_time_limit(600);
 
-require '../vendor/simple-html-dom/simple-html-dom/simple_html_dom.php';
-require '../vendor/autoload.php';
+require __DIR__ . '/../vendor/simple-html-dom/simple-html-dom/simple_html_dom.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -28,6 +28,7 @@ $capsule->addConnection([
     'database' => env('DB_DATABASE'),
     'username' => env('DB_USERNAME'),
     'password' => env('DB_PASSWORD'),
+    'charset' => 'utf8',
 ]);
 $capsule->setAsGlobal();
 
@@ -35,13 +36,18 @@ $chunkCounter = 0;
 $not_stored = [];
 $capsule::table('addons')->orderBy('id')->chunk(100, function($addons) use ($base_host, $addonsDir, $s3, &$chunkCounter, &$not_stored) {
     try {
-        if ($chunkCounter < 13) {
-            $chunkCounter++;
-            return;
-        }
+        echo "\n\n\e[34m======================= CHUNK $chunkCounter ======================== \e[97m\n\n";
         foreach ($addons as $addon) {
+            echo "+++++++++++++ Addon \e[93m" . $addon->name . " \e[97m with id \e[93m $addon->id \e[97m parsing started\n";
+
+            if ($s3->doesObjectExist(env('AWS_BUCKET'), 'addons-files/' . $addon->file_name)) {
+                echo "\e[31m File already exists on S3 \e[97m\n\n";
+                continue;
+            }
+
             $addon_page = file_get_html($base_host . $addon->link);
             if (!$addon_page) {
+                echo "\e[31m Failed to get addon's page \e[97m\n";
                 $not_stored[] = $addon->id;
                 continue;
             }
@@ -59,38 +65,44 @@ $capsule::table('addons')->orderBy('id')->chunk(100, function($addons) use ($bas
 
             if (
                 is_null($fileUrl)
-                || file_put_contents('./addons/' . $addon->file_name, fopen($fileUrl, 'r')) === false
+                || file_put_contents(__DIR__ . '/addons/' . $addon->file_name, fopen($fileUrl, 'r')) === false
             ) {
                 $not_stored[] = $addon->id;
                 continue;
             }
 
-            if (!$s3->doesObjectExist(env('AWS_BUCKET'), 'addons-files/' . $addon->file_name)) {
-                $s3->putObject([
-                    'Bucket' => env('AWS_BUCKET'),
-                    'Key'    => 'addons-files/' . $addon->file_name,
-                    'Body' => fopen($addonsDir . $addon->file_name, 'r+')
-                ]);
+            echo "Original filename -  $fileUrl \e[97m\n";
+            echo "\e[32m File $addon->file_name downloaded to local \e[97m\n";
 
-                $s3->waitUntil('ObjectExists', array(
-                    'Bucket' => env('AWS_BUCKET'),
-                    'Key'    => 'addons-files/' . $addon->file_name
-                ));
-            }
+            $s3->putObject([
+                'Bucket' => env('AWS_BUCKET'),
+                'Key'    => 'addons-files/' . $addon->file_name,
+                'Body' => fopen($addonsDir . $addon->file_name, 'r+')
+            ]);
+
+            $s3->waitUntil('ObjectExists', array(
+                'Bucket' => env('AWS_BUCKET'),
+                'Key'    => 'addons-files/' . $addon->file_name
+            ));
+
+            echo "\e[32m File $addon->file_name uploaded into S3 \e[97m\n";
 
             if (file_exists($addonsDir . $addon->file_name)) {
                 unlink($addonsDir . $addon->file_name);
+                echo "\e[32m File successfully removed from local";
+            } else {
+                echo "\e[31m Cannot remove file from local, file not exists";
             }
+
+            echo "\e[97m\n";
         }
 
+        echo "\e[97m Chunk finished\n";
+
         $chunkCounter++;
-        if ($chunkCounter === 50) {
-            die();
-        }
-    } catch(Exception $exception) {
-        $fp = fopen('failed_addon.txt', 'w');
-        fwrite($fp, $addon->id);
-        fclose($fp);
+    } catch(Throwable $exception) {
+        echo $exception->getMessage() . "\n" . $exception->getTraceAsString();
+        die();
     }
 });
 
