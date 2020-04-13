@@ -16,14 +16,14 @@ jQuery( document ).ready(function( $ ) {
         testAddonBackendCall(addonInfo);
     });
 
-    $('.test-selected.test-selected-initial-error').on('click', function () {
+    $('.test-selected.test-selected-on-start-test').on('click', function () {
         let checkedAddons = JSON.parse(window.sessionStorage.getItem('selectedAddons')).addons;
 
         for (let id in checkedAddons) {
             if (checkedAddons.hasOwnProperty(id)) {
                 let addonInfo = checkedAddons[id];
                 console.log('Addon name: ' + addonInfo.name);
-                console.log('initial-error testing started.');
+                console.log('on-start-test testing started.');
 
                 testAddonBackendCall(addonInfo);
             }

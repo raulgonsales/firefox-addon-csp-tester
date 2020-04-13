@@ -31,7 +31,7 @@ def test_addon():
 
     # logger.debug('DEBUG REQUEST: Initial error for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
-    tests.initial_error_test(addon_file, addon_id)
+    tests.start_on_start_test(addon_file, addon_id)
 
     resp = make_response('true')
     resp.headers['Access-Control-Allow-Origin'] = '*'

@@ -17,7 +17,7 @@ s3_addons_folder = 'addons-files/'
 local_addons_folder = '/usr/src/app/resources/addons/'
 
 
-def initial_error_test(addon_file, addon_id):
+def start_on_start_test(addon_file, addon_id):
     download_addon_file(addon_file)
 
     display = Display(visible=0, size=(800, 600))
@@ -25,7 +25,7 @@ def initial_error_test(addon_file, addon_id):
 
     browser = webdriver.Firefox()
     browser.install_addon('/usr/src/app/resources/addons/' + addon_file)
-    browser.get('http://172.22.0.3/test?addon_id=' + str(addon_id) + '&test_type=initial-error')
+    browser.get('http://172.22.0.6/test?addon_id=' + str(addon_id) + '&test_type=on-start-test')
     browser.quit()
     display.stop()
 

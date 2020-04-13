@@ -35,7 +35,7 @@
                             Filter
                         </button>
                         <div class="dropdown-menu">
-                            <a href="http://localhost:998?errorType=initial-error" class="dropdown-item test-selected" data-error-type="initial-error">initial-error</a>
+                            <a href="http://localhost:998?errorType=on-start-test" class="dropdown-item test-selected" data-error-type="on-start-test">on-start-test</a>
                             <a href="http://localhost:998?errorType=no-errors" class="dropdown-item test-selected" data-error-type="no-errors">no-errors</a>
                             <a href="http://localhost:998" class="dropdown-item test-selected">all</a>
                         </div>
@@ -46,7 +46,7 @@
                             Test selected
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item test-selected test-selected-initial-error" data-error-type="initial-error">initial-error</button>
+                            <button class="dropdown-item test-selected test-selected-on-start-test" data-error-type="on-start-test">on-start-test</button>
                             <button class="dropdown-item test-selected test-selected-content-scripts-analyzing" data-error-type="content-scripts-analyzing">content-scripts-analyzing</button>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                             Full test
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item full-test" data-error-type="initial-error">initial-error</button>
+                            <button class="dropdown-item full-test" data-error-type="on-start-test">on-start-test</button>
                         </div>
                     </div>
 
@@ -65,8 +65,8 @@
                             Generate report
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item report-all" data-error-type="initial-error">For all</button>
-                            <button class="dropdown-item report-selected" data-error-type="initial-error">For selected</button>
+                            <button class="dropdown-item report-all" data-error-type="on-start-test">For all</button>
+                            <button class="dropdown-item report-selected" data-error-type="on-start-test">For selected</button>
                         </div>
                     </div>
 

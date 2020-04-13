@@ -11,7 +11,7 @@ class HomepageController extends Controller
     const FIREFOX_ADDONS_LINK = 'https://addons.mozilla.org';
 
     const POSSIBLE_ERROR_TYPES = [
-        'initial-error',
+        'on-start-test',
         'no-errors'
     ];
 
