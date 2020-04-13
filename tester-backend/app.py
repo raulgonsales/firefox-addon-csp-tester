@@ -19,7 +19,7 @@ fh_debug.setLevel(logging.DEBUG)
 logger.addHandler(fh_debug)
 
 
-@app.route('/test/initial-error', methods=["POST"])
+@app.route('/test/on-start-test', methods=["POST"])
 def test_addon():
     if request.method != 'POST':
         logger.error('ERROR: Unsupported call method!')

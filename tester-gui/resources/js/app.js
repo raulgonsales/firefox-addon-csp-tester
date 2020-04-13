@@ -13,7 +13,7 @@ jQuery( document ).ready(function( $ ) {
             'id': $(this).data('id'),
         };
 
-        testAddonBackendCall(addonInfo, 'initial-error');
+        testAddonBackendCall(addonInfo);
     });
 
     $('.test-selected.test-selected-initial-error').on('click', function () {
@@ -25,7 +25,7 @@ jQuery( document ).ready(function( $ ) {
                 console.log('Addon name: ' + addonInfo.name);
                 console.log('initial-error testing started.');
 
-                testAddonBackendCall(addonInfo, 'initial-error');
+                testAddonBackendCall(addonInfo);
             }
         }
     });
@@ -181,15 +181,16 @@ function analyzeAddonContentScript(addonInfo, sitesMatching) {
     });
 }
 
-function testAddonBackendCall(addonInfo, cspErrorType) {
+function testAddonBackendCall(addonInfo) {
     $.ajax({
+        async: false,
         method: "POST",
-        url: "http://localhost:996/test/" + cspErrorType,
+        url: "http://localhost:998/api/backend-call/on-start-test",
         data: {
-            name: addonInfo.name,
-            file: addonInfo.file,
-            link: addonInfo.link,
-            id: addonInfo.id
+            addon_name: addonInfo.name,
+            addon_file: addonInfo.file,
+            addon_link: addonInfo.link,
+            addon_id: addonInfo.id
         },
         datatype: 'application/json',
         crossDomain: true

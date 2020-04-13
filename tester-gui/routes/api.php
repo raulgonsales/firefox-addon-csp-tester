@@ -22,3 +22,8 @@ Route::post('save-content-scripts-info', 'AddonsForSitesController@insert');
 
 Route::get('report-for-all', 'ReportController@getForAll');
 Route::post('render-report', 'ReportController@render');
+
+Route::prefix('backend-call')->group(function () {
+    Route::post('{test_type}', 'AjaxController@startTestBackendCall');
+});
+

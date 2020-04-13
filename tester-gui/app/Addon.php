@@ -17,4 +17,9 @@ class Addon extends Model
     {
         return $this->hasMany(CspReport::class);
     }
+
+    public function addonTests()
+    {
+        return $this->hasMany(AddonTest::class);
+    }
 }

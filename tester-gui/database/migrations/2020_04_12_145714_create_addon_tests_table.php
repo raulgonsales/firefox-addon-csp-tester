@@ -17,6 +17,7 @@ class CreateAddonTestsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('addon_id')->unsigned();
             $table->string('type_name');
+            $table->boolean('failed_test')->nullable();
         });
 
         Schema::table('addon_tests', function (Blueprint $table) {
