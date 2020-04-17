@@ -60,7 +60,7 @@ class Downloader extends Command
                 self::STORE_BASE_HOST . $addonLink,
                 [
                     'headers' => [
-                        'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
+                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel …) Gecko/20100101 Firefox/75.0',
                     ]
                 ]
             );

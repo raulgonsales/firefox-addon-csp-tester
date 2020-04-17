@@ -131,7 +131,7 @@ jQuery(document).ready(function ($) {
         resolve();
       });
     }).then(function () {
-      var checkedAddons = JSON.parse(window.localStorage.getItem('selectedAddons')).addons;
+      var checkedAddons = JSON.parse(window.sessionStorage.getItem('selectedAddons')).addons;
 
       for (var addonId in checkedAddons) {
         if (checkedAddons.hasOwnProperty(addonId)) {
@@ -235,48 +235,29 @@ function getAddonInfoFromCheckbox(checkbox) {
   };
 }
 
-function saveContentScriptsInfo(data, addonId) {
-  $.ajax({
-    method: "POST",
-    url: "http://localhost:998/api/save-content-scripts-info",
-    data: {
-      data: data,
-      addon_id: addonId
-    },
-    datatype: 'application/json',
-    crossDomain: true
-  }).done(function (msg) {
-    console.log(msg);
-  });
-}
-
 function analyzeAddonContentScript(addonInfo, sitesMatching) {
   $.ajax({
     method: "POST",
-    url: "http://localhost:996/test/content-scripts-analyzing",
+    url: "http://localhost:998/api/backend-call/content-scripts-analysis",
     data: {
-      name: addonInfo.name,
-      file: addonInfo.file,
-      link: addonInfo.link,
+      addon_name: addonInfo.name,
+      addon_file: addonInfo.file,
+      addon_link: addonInfo.link,
+      addon_id: addonInfo.id,
       sites_matching: JSON.stringify(sitesMatching)
     },
     datatype: 'application/json',
-    crossDomain: true,
-    beforeSend: function beforeSend() {
-      console.log('--------- Analyze content scripts for ' + addonInfo.name + ' -------------');
-    }
+    crossDomain: true
   }).done(function (response) {
     console.log(response);
-    console.log('Content script for ' + addonInfo.name + ' successfully analyzed');
-    saveContentScriptsInfo(response, addonInfo.id);
   });
 }
 
 function testAddonBackendCall(addonInfo) {
   $.ajax({
-    async:false,
+    async: false,
     method: "POST",
-    url: "http://localhost:998/api/backend-call/on-start-test",
+    url: "http://localhost:998/api/backend-call/test/on-start-test",
     data: {
       addon_name: addonInfo.name,
       addon_file: addonInfo.file,

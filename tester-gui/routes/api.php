@@ -24,6 +24,7 @@ Route::get('report-for-all', 'ReportController@getForAll');
 Route::post('render-report', 'ReportController@render');
 
 Route::prefix('backend-call')->group(function () {
-    Route::post('{test_type}', 'AjaxController@startTestBackendCall');
+    Route::post('test/{test_type}', 'AjaxController@startTestBackendCall');
+    Route::post('content-scripts-analysis', 'AjaxController@startContentScriptAnalysis');
 });
 

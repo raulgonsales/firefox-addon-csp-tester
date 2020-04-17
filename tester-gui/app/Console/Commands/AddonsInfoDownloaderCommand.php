@@ -122,6 +122,11 @@ final class AddonsInfoDownloaderCommand extends Downloader
                         continue;
                     }
 
+                    if ($addon_page->find('.AddonCompatibilityError-message', 0)) {
+                        echo "\e[31m    Addon is not compatible with latest version of Firefox \e[97m\n";
+                        continue;
+                    }
+
                     $addon_file_link = $addon_page->find('.AMInstallButton-button', 0)->href;
 
                     if (

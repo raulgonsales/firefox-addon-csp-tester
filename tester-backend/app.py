@@ -3,12 +3,10 @@
 from flask import Flask
 from flask import make_response
 from flask import request
-from flask import jsonify
 import logging
 import json
 
 from lib import tests
-from lib import content_script_analyzer
 
 app = Flask(__name__)
 
@@ -38,7 +36,7 @@ def test_addon():
     return resp
 
 
-@app.route('/test/content-scripts-analyzing', methods=["POST"])
+@app.route('/test/content-scripts-analysis', methods=["POST"])
 def analyze_addons_content_scripts():
     if request.method != 'POST':
         logger.error('ERROR: Unsupported call method!')
@@ -51,9 +49,10 @@ def analyze_addons_content_scripts():
     # logger.debug('DEBUG REQUEST: Content script analyzing for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
     try:
-        response = content_script_analyzer.analyze(addon_file, json.loads(sites_matching))
+        response = tests.analyze(addon_file, json.loads(sites_matching))
     except Exception as err:
         response = 'Error on backend: ' + str(err)
+        print(response)
         logger.debug(response)
 
     resp = make_response(response)
