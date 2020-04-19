@@ -3,44 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Addon;
+use App\CspReport;
+use App\Models\Enum\TestTypesEnum;
+use App\Site;
 use Illuminate\Http\Request;
 use Psy\Util\Json;
 
 class ReportController extends Controller
 {
-    public function getForAll()
+    public function getReportForCspErrorsStat()
     {
-        $allAddons = Addon::all();
+        $data['addonsCount'] = Addon::count();
+        $data['onStartTestAddonsCount'] = Addon::select(['addons.id'])
+            ->leftJoin('csp_reports', 'csp_reports.addon_id', '=', 'addons.id')
+            ->where('test_type', '=', 'on-start-test')
+            ->whereNotNull('csp_reports.id')->distinct()->get()->count();
+        $data['noCspErrorsAddons'] = Addon::select(['addons.id'])
+            ->leftJoin('csp_reports', 'csp_reports.addon_id', '=', 'addons.id')
+            ->whereNull('csp_reports.id')
+            ->get()
+            ->count();
 
-        $noError = $allAddons->where('csp_error_type', null);
-        $initialError = $allAddons->where('csp_error_type', 'initial-error');
-        $response = [
-            'count' => $allAddons->count(),
-            'by_errors' => [
-                'no_error' => [
-                    'count' => $noError->count(),
-                    'items' => $noError
-                ],
-                'initial_error' => [
-                    'count' => $initialError->count(),
-                    'items' => $initialError
-                ]
-            ]
+        $data['graphDataPoints'] = [
+            ['y' => $data['noCspErrorsAddons'], 'label' => TestTypesEnum::NO_ERROR()->value],
+            ['y' => $data['onStartTestAddonsCount'], 'label' => TestTypesEnum::ON_START_TESTS()->value]
         ];
 
-        return Json::encode($response);
+        return response(
+            view('cspErrorReport')->with($data)
+        );
     }
 
-    public function render(Request $request)
+    public function getCspStatisticPerAddon(string $testType)
     {
-        if (!isset($request->data)) {
-            throw new \Exception('Data for rendering report not provided!');
-        }
+        $data['kek'] = Addon::addonsWithExistedCspReports('on-start-test');
 
-        $data = $request->data;
+        return response(
+            view('cspErrorStatisticPerAddon')->with($data)
+        );
+    }
 
-        $view = view('reportModal');
-        $view->test = 'kek';
-        echo $view->render();
+    public function getReportForAddonSiteStat()
+    {
+        $sites = Site::all()->load('relatedAddons');
+
+        return response(
+            view('sitesAddonsReport')->with([
+                'sites' => $sites
+            ])
+        );
     }
 }

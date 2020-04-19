@@ -50,14 +50,6 @@ jQuery( document ).ready(function( $ ) {
         });
     });
 
-    $('.report-all').on('click', function () {
-        renderReportForAll(getReportForAll());
-        $('#show_all_report').removeClass('hidden').on('click', function () {
-            $('#reportAllModal').modal('toggle');
-        });
-        $('#reportAllModal').modal('toggle');
-    });
-
     $('.check-addon').on('change', function () {
         if (window.sessionStorage.getItem('selectedAddons') === null) {
             window.sessionStorage.setItem('selectedAddons', JSON.stringify({'addons': {}}));

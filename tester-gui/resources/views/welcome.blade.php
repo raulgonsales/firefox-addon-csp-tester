@@ -65,7 +65,7 @@
                             Generate report
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item report-all" data-error-type="on-start-test">For all</button>
+                            <a href="/csp-errors-report" class="dropdown-item">For all</a>
                             <button class="dropdown-item report-selected" data-error-type="on-start-test">For selected</button>
                         </div>
                     </div>
@@ -140,7 +140,6 @@
             {{ $addons->links() }}
         </section>
         <div id="tester" style="width:600px;height:250px;"></div>
-        @include('reportAllModal')
         @include('sitesListModal')
     </body>
 </html>

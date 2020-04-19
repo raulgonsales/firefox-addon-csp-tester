@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Addon;
 use App\Models\Collections\AddonSiteItems\SiteInfo;
-use App\Site;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Collections\CollectionFactory;
@@ -49,16 +48,5 @@ class AddonsForSitesController extends Controller
         }
 
         return response()->json(['success' => 'success'], 200);
-    }
-
-    public function showAll(Request $request)
-    {
-        $sites = Site::all()->load('relatedAddons');
-
-        return response(
-            view('sitesAddonsReport')->with([
-                'sites' => $sites
-            ])
-        );
     }
 }
