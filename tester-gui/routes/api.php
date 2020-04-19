@@ -18,7 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('store-csp-reports/{test_type}/{addon_id}', 'PostCspReportsController@store');
-Route::post('save-content-scripts-info', 'AddonsForSitesController@insert');
 
 Route::prefix('backend-call')->group(function () {
     Route::post('test/{test_type}', 'AjaxController@startTestBackendCall');

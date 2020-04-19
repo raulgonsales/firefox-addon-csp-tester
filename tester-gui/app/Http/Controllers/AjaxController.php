@@ -242,7 +242,7 @@ class AjaxController extends Controller
                     'content_scripts_count' => $siteInfo->getContentScriptsCount(),
                     'content_scripts_count_with_signs' => $siteInfo->getContentScriptsCountWithSigns(),
                     'scripts_info' => $siteInfo->getScriptsInfoCollection() !== null ?
-                        json_encode($request->data[$siteInfo->getSiteId()]['scripts_info'])
+                        serialize($siteInfo->getScriptsInfoCollection()->getArrayCopy())
                         : null
                 ]
             ], false);

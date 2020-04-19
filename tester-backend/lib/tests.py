@@ -29,7 +29,7 @@ def start_on_start_test(addon_file, addon_id):
     options.headless = True
     browser = webdriver.Firefox(options=options)
     browser.install_addon('/usr/src/app/resources/addons/' + addon_file)
-    browser.get('http://172.22.0.5/test?addon_id=' + str(addon_id) + '&test_type=on-start-test')
+    browser.get('http://172.22.0.2/test?addon_id=' + str(addon_id) + '&test_type=on-start-test')
     browser.quit()
 
     delete_addon_file(addon_file)
@@ -53,33 +53,48 @@ def analyze(addon_file, sites_matching):
         if 'content_scripts' not in json_object:
             continue
 
-        content_scripts = []
+        content_scripts_batches = []
+        run_at = None
         for content_script_item in json_object['content_scripts']:
             if matching_url not in content_script_item['matches']:
                 continue
             if 'js' not in content_script_item:
                 continue
 
-            content_scripts += content_script_item['js']
+            if 'run_at' in content_script_item:
+                run_at = content_script_item['run_at']
 
-        if len(content_scripts) == 0:
+            content_scripts = content_script_item['js']
+
+            content_scripts_batches.append({
+                'content_scripts': list(set(content_scripts)),
+                'run_at': run_at
+            })
+
+        if len(content_scripts_batches) == 0:
             continue
-
-        content_scripts = list(set(content_scripts))
 
         scripts_info = {}
         scripts_with_signs_count = 0
-        for script in content_scripts:
-            scripts_info[script] = process_script(addon_unzipped_dirpath + '/' + script)
-            if scripts_info[script] is not False:
-                scripts_with_signs_count += 1
+        content_scripts_count = 0
+        for batch in content_scripts_batches:
+            content_scripts_count += len(batch['content_scripts'])
+
+            for script in batch['content_scripts']:
+                if script in scripts_info:
+                    continue
+
+                scripts_info[script] = process_script(addon_unzipped_dirpath + '/' + script, batch['run_at'])
+                if scripts_info[script] is not False:
+                    scripts_with_signs_count += 1
 
         sites_info[site_id] = {
-                "use_content_scripts": True,
-                "content_scripts_count": len(content_scripts),
-                "content_scripts_count_with_signs": scripts_with_signs_count,
-                "scripts_info": scripts_info
-            }
+            "use_content_scripts": True,
+            "run_at": run_at,
+            "content_scripts_count": content_scripts_count,
+            "content_scripts_count_with_signs": scripts_with_signs_count,
+            "scripts_info": scripts_info
+        }
 
     delete_addon_unzipped_files(addon_file)
     delete_addon_file(addon_file)
@@ -87,16 +102,20 @@ def analyze(addon_file, sites_matching):
     return jsonify(sites_info)
 
 
-def process_script(script_path):
+def process_script(script_path, run_at):
     script_injecting_signs = [
-        "injectScript",
-        "insertScript",
-        "appendScript",
+        "injectScript(",
+        "insertScript(",
+        "appendScript(",
         "insertBefore(script",
+        "insertBefore(scrpt",
         "insertBefore(<script",
         "appendChild(script",
+        "appendChild(scrpt",
         "appendChild(<script",
-        "document.createElement('script')"
+        "appendChild(<scrpt",
+        "document.createElement('script')",
+        "document.createElement(\"script\")"
     ]
 
     with open(script_path, 'r') as file:
@@ -117,7 +136,8 @@ def process_script(script_path):
 
     if len(found_signs) > 0:
         return {
-            'found_script_injection_signs': found_signs
+            'found_script_injection_signs': found_signs,
+            'run_at': run_at
         }
     else:
         return False

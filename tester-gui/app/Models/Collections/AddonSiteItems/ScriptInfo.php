@@ -10,16 +10,21 @@ class ScriptInfo
     /** @var string */
     private $scriptPath;
 
+    /** @var string|null */
+    private $runAt;
+
     /** @var SignsCollection|null $sign */
     private $signsCollection;
 
     /**
-     * @param string $scriptPath
-     * @param SignsCollection|null $signsCollection
+     * @param  string  $scriptPath
+     * @param  string|null  $runAt
+     * @param  SignsCollection|null  $signsCollection
      */
-    public function __construct(string $scriptPath, ?SignsCollection $signsCollection)
+    public function __construct(string $scriptPath, ?string $runAt, ?SignsCollection $signsCollection)
     {
         $this->scriptPath = $scriptPath;
+        $this->runAt = $runAt;
         $this->signsCollection = $signsCollection;
     }
 
@@ -33,6 +38,7 @@ class ScriptInfo
     {
         return new self(
             $scriptPath,
+            $scriptInfo['run_at'],
             $scriptInfo !== null
                 ? CollectionFactory::createSignsCollection($scriptInfo['found_script_injection_signs'])
                 : null

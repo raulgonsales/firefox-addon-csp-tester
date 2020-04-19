@@ -15,7 +15,7 @@ class HomepageController extends Controller
         'no-errors'
     ];
 
-    const PAGINATE_ITEM_PER_PAGE = 25;
+    const PAGINATE_ITEM_PER_PAGE = 100;
 
     public function show(Request $request)
     {

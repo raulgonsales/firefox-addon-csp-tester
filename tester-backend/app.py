@@ -48,12 +48,7 @@ def analyze_addons_content_scripts():
 
     # logger.debug('DEBUG REQUEST: Content script analyzing for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
-    try:
-        response = tests.analyze(addon_file, json.loads(sites_matching))
-    except Exception as err:
-        response = 'Error on backend: ' + str(err)
-        print(response)
-        logger.debug(response)
+    response = tests.analyze(addon_file, json.loads(sites_matching))
 
     resp = make_response(response)
     resp.headers['Access-Control-Allow-Origin'] = '*'
