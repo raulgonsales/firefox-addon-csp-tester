@@ -8,6 +8,7 @@ import os
 import shutil
 import zipfile
 import codecs
+import fnmatch, re
 
 load_dotenv()
 
@@ -56,7 +57,7 @@ def analyze(addon_file, sites_matching):
         content_scripts_batches = []
         run_at = None
         for content_script_item in json_object['content_scripts']:
-            if matching_url not in content_script_item['matches']:
+            if not find_matching_url(matching_url, content_script_item['matches']):
                 continue
             if 'js' not in content_script_item:
                 continue
@@ -64,10 +65,8 @@ def analyze(addon_file, sites_matching):
             if 'run_at' in content_script_item:
                 run_at = content_script_item['run_at']
 
-            content_scripts = content_script_item['js']
-
             content_scripts_batches.append({
-                'content_scripts': list(set(content_scripts)),
+                'content_scripts': list(set(content_script_item['js'])),
                 'run_at': run_at
             })
 
@@ -102,6 +101,24 @@ def analyze(addon_file, sites_matching):
     return jsonify(sites_info)
 
 
+def find_matching_url(find_url, urls):
+    print(find_url)
+    for url in urls:
+        if url == '<all_urls>':
+            print(True)
+            return True
+
+        print(url)
+        regex = fnmatch.translate(url)
+
+        if bool(re.compile(regex).match(find_url)):
+            print(True)
+            return True
+
+    print(False)
+    return False
+
+
 def process_script(script_path, run_at):
     script_injecting_signs = [
         "injectScript(",
@@ -114,8 +131,10 @@ def process_script(script_path, run_at):
         "appendChild(scrpt",
         "appendChild(<script",
         "appendChild(<scrpt",
-        "document.createElement('script')",
-        "document.createElement(\"script\")"
+        ".createElement('script')",
+        ".createElement(\"script\")",
+        ".createElement(script)",
+        ".createElement(scrpt)"
     ]
 
     with open(script_path, 'r') as file:

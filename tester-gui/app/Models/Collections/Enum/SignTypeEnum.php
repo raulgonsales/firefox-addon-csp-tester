@@ -30,8 +30,8 @@ class SignTypeEnum extends Enum
     const APPEND_CHILD_LEFT_BRACE_SCRIPT = "appendChild(script";
     const APPEND_CHILD_LEFT_BRACE_SCRPT = "appendChild(scrpt";
     const APPEND_CHILD_LEFT_BRACE_LESS_SIGN_SCRIPT = "appendChild(<script";
-    const DOCUMENT_CREATE_ELEMENT_SCRIPT_STRING = "document.createElement('script')";
-    const DOCUMENT_CREATE_ELEMENT_SCRIPT_STRING_DOUBLE_QUOTES = "document.createElement(\"script\")";
-    const DOCUMENT_CREATE_ELEMENT_SCRIPT_VARIABLE = "document.createElement(script)";
-    const DOCUMENT_CREATE_ELEMENT_SCRPT_VARIABLE = "document.createElement(scrpt)";
+    const DOCUMENT_CREATE_ELEMENT_SCRIPT_STRING = ".createElement('script')";
+    const DOCUMENT_CREATE_ELEMENT_SCRIPT_STRING_DOUBLE_QUOTES = ".createElement(\"script\")";
+    const DOCUMENT_CREATE_ELEMENT_SCRIPT_VARIABLE = ".createElement(script)";
+    const DOCUMENT_CREATE_ELEMENT_SCRPT_VARIABLE = ".createElement(scrpt)";
 }
