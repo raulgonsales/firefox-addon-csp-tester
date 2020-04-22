@@ -41,7 +41,24 @@ def analyze(addon_file, sites_matching):
     unzip_addon(addon_file)
 
     with codecs.open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', 'r', 'utf-8-sig') as openfile:
-        json_object = json.load(openfile)
+        try:
+            json_object = json.load(openfile)
+        except json.JSONDecodeError:
+            old_manifest = open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', "r")
+            os.remove('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json')
+
+            with open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', "w") as new_manifest:
+                for line in old_manifest:
+                    line = "".join(line.split())
+                    if line.startswith('//') or line.startswith('#'):
+                        continue
+                    new_manifest.write(line + '\n')
+
+            with codecs.open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', 'r', 'utf-8-sig') as openfile_new_manifest:
+                try:
+                    json_object = json.load(openfile_new_manifest)
+                except json.JSONDecodeError:
+                    return False
 
     addon_unzipped_dirpath = '/usr/src/app/resources/addons/unziped/' + addon_file
 
@@ -57,7 +74,7 @@ def analyze(addon_file, sites_matching):
         content_scripts_batches = []
         run_at = None
         for content_script_item in json_object['content_scripts']:
-            if not find_matching_url(matching_url, content_script_item['matches']):
+            if matching_url not in content_script_item['matches'] and not find_matching_url(matching_url, content_script_item['matches']):
                 continue
             if 'js' not in content_script_item:
                 continue
@@ -102,20 +119,15 @@ def analyze(addon_file, sites_matching):
 
 
 def find_matching_url(find_url, urls):
-    print(find_url)
     for url in urls:
         if url == '<all_urls>':
-            print(True)
             return True
 
-        print(url)
         regex = fnmatch.translate(url)
 
         if bool(re.compile(regex).match(find_url)):
-            print(True)
             return True
 
-    print(False)
     return False
 
 
@@ -137,7 +149,7 @@ def process_script(script_path, run_at):
         ".createElement(scrpt)"
     ]
 
-    with open(script_path, 'r') as file:
+    with codecs.open(script_path, 'r', encoding='utf-8', errors='ignore') as file:
         line_number = 1
         line = file.readline()
         found_signs = []
