@@ -11,8 +11,11 @@ class Site extends Model
         return $this->belongsToMany(Addon::class, 'addon_site');
     }
 
-    public function relatedAddons()
+    public function relatedAddonsWithScriptSigns()
     {
-        return $this->belongsToMany(Addon::class, 'addon_site')->wherePivot('content_scripts_count', '>', 0)->withPivot('content_scripts_count');
+        return $this->belongsToMany(Addon::class, 'addon_site')
+            ->wherePivot('content_scripts_count', '>', 0)
+            ->wherePivot('content_scripts_count_with_signs', '>', 0)
+            ->withPivot(['content_scripts_count', 'content_scripts_count_with_signs', 'scripts_info'])->orderByDesc('users_count');
     }
 }

@@ -72,7 +72,7 @@
 
                     <button class="btn btn-info hidden" id="show_all_report">Show report for all</button>
 
-                    <a class="btn btn-success" href="/sites-addons-report">Show report for all</a>
+                    <a class="btn btn-success" href="/sites-addons-report">Sites statistics</a>
                 </div>
                 <div class="searchbox">
                     {{--                    TODO bootstrap select--}}
