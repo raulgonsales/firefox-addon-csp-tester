@@ -1,5 +1,6 @@
 from selenium import webdriver
 import boto3
+import botocore
 from dotenv import load_dotenv
 from selenium.webdriver.firefox.options import Options
 from flask import jsonify
@@ -9,6 +10,7 @@ import shutil
 import zipfile
 import codecs
 import fnmatch, re
+import string
 
 load_dotenv()
 
@@ -37,8 +39,19 @@ def start_on_start_test(addon_file, addon_id):
 
 
 def analyze(addon_file, sites_matching):
-    download_addon_file(addon_file)
+    download_result = download_addon_file(addon_file)
+
+    if not download_result:
+        return jsonify({
+            'error_status_code': 1
+        })
+
     unzip_addon(addon_file)
+
+    if not os.path.exists('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json'):
+        return jsonify({
+            'error_status_code': 1
+        })
 
     with codecs.open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', 'r', 'utf-8-sig') as openfile:
         try:
@@ -58,7 +71,13 @@ def analyze(addon_file, sites_matching):
                 try:
                     json_object = json.load(openfile_new_manifest)
                 except json.JSONDecodeError:
-                    return False
+                    return jsonify({
+                        'error_status_code': 1
+                    })
+        except UnicodeDecodeError:
+            return jsonify({
+                'error_status_code': 1
+            })
 
     addon_unzipped_dirpath = '/usr/src/app/resources/addons/unziped/' + addon_file
 
@@ -74,6 +93,8 @@ def analyze(addon_file, sites_matching):
         content_scripts_batches = []
         run_at = None
         for content_script_item in json_object['content_scripts']:
+            if 'matches' not in content_script_item:
+                continue
             if matching_url not in content_script_item['matches'] and not find_matching_url(matching_url, content_script_item['matches']):
                 continue
             if 'js' not in content_script_item:
@@ -138,16 +159,28 @@ def process_script(script_path, run_at):
         "appendScript(",
         "insertBefore(script",
         "insertBefore(scrpt",
-        "insertBefore(<script",
+        "insertBefore( script",
+        "insertBefore( scrpt",
         "appendChild(script",
         "appendChild(scrpt",
-        "appendChild(<script",
-        "appendChild(<scrpt",
+        "appendChild( script",
+        "appendChild( scrpt",
         ".createElement('script')",
         ".createElement(\"script\")",
         ".createElement(script)",
         ".createElement(scrpt)"
+        ".createElement( 'script' )",
+        ".createElement( 'script' )",
+        ".createElement( \"script\" )",
+        ".createElement( script )",
+        ".createElement( scrpt )"
     ]
+
+    if not os.path.exists(script_path) and len(script_path.split('?')) > 1:
+        script_path = script_path.split('?')[0]
+
+    if not os.path.exists(script_path):
+        return False
 
     with codecs.open(script_path, 'r', encoding='utf-8', errors='ignore') as file:
         line_number = 1
@@ -176,9 +209,15 @@ def process_script(script_path, run_at):
 
 def download_addon_file(file_name):
     if os.path.exists(local_addons_folder + file_name):
-        return
+        return True
 
-    s3_client.download_file(bucket_name, s3_addons_folder + file_name, local_addons_folder + file_name)
+    try:
+        s3_client.download_file(bucket_name, s3_addons_folder + file_name, local_addons_folder + file_name)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            return False
+
+    return True
 
 
 def delete_addon_file(file_name):

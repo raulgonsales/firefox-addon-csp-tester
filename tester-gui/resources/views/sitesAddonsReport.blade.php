@@ -89,11 +89,11 @@
                 animationEnabled: true,
                 height: 650,
                 title:{
-                    text: "Count of addons having signs of injecting content scripts into DOM (per each site)",
+                    text: "Count of potential influenced by the bug extensions",
                     fontSize: 20
                 },
                 axisY: {
-                    title: "Addons count",
+                    title: "Extensions count",
                     titleFontSize: 17,
                     labelFontSize: 13,
                     tickLength: 10

@@ -11,10 +11,10 @@
 {{--    </script>--}}
 </head>
 <body id="body">
-    <div id="test1" style="background: red; float: left;">
+    <div id="test1">
         kek
     </div>
-    <div id="test2" style="background: green; float: right;">
+    <div id="test2">
         test
     </div>
 </body>

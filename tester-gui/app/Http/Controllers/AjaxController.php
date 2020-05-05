@@ -213,10 +213,20 @@ class AjaxController extends Controller
             return response()->json(['failed' => 'failed'], 500);
         }
 
-        $responseContent = $response->getBody()->getContents();
+        $responseContent = json_decode($response->getBody()->getContents(), true);
+
+        if (isset($responseContent['error_status_code']) and $responseContent['error_status_code'] == 1) {
+            if ($addonTest = AddonTest::where('addon_id', '=', $addon->id)->get()->first()) {
+                $addonTest->delete();
+            }
+
+            $addon->delete();
+
+            return response()->json(['failed' => 'failed'], 500);
+        }
 
         try {
-            $sitesInfoCollection = CollectionFactory::createAddonSiteInfoCollection(json_decode($responseContent, true));
+            $sitesInfoCollection = CollectionFactory::createAddonSiteInfoCollection($responseContent);
         } catch (Throwable $exception) {
             $sitesInfoCollection = null;
 
@@ -248,6 +258,6 @@ class AjaxController extends Controller
             ], false);
         }
 
-        return response()->json(['success' => json_decode($responseContent, true)], 200);
+        return response()->json(['success' => $responseContent], 200);
     }
 }
