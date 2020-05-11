@@ -25,14 +25,15 @@ s3_addons_folder = 'addons-files/'
 local_addons_folder = '/usr/src/app/resources/addons/'
 
 
-def start_on_start_test(addon_file, addon_id):
+def start_on_start_test(addon_file, addon_id, test_type, domain):
     download_addon_file(addon_file)
 
     options = Options()
     options.headless = True
     browser = webdriver.Firefox(options=options)
     browser.install_addon('/usr/src/app/resources/addons/' + addon_file)
-    browser.get('http://172.22.0.2/test?addon_id=' + str(addon_id) + '&test_type=on-start-test')
+    print('http://' + domain + '/test?addon_id=' + str(addon_id) + '&test_type=' + test_type)
+    browser.get('http://' + domain + '/test?addon_id=' + str(addon_id) + '&test_type=' + test_type)
     browser.quit()
 
     delete_addon_file(addon_file)

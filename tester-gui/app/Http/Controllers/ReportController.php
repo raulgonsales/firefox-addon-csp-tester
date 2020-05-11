@@ -56,7 +56,7 @@ class ReportController extends Controller
             if ($firefoxRecommend !== null) {
                 $query->where('firefox_recommend', '=', $firefoxRecommend);
             }
-        }])->get() as $site) {
+        }])->take(22)->orderByDesc('id')->get() as $site) {
             $data['graphDataPoints'][] = [
                 'y' => $site->related_addons_with_script_signs_count,
                 'label' => $site->site_name,

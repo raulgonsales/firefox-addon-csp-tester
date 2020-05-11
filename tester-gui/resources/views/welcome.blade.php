@@ -35,8 +35,9 @@
                             Filter
                         </button>
                         <div class="dropdown-menu">
-                            <a href="http://localhost:998?errorType=on-start-test" class="dropdown-item test-selected" data-error-type="on-start-test">on-start-test</a>
-                            <a href="http://localhost:998?errorType=no-errors" class="dropdown-item test-selected" data-error-type="no-errors">no-errors</a>
+                            <a href="http://localhost:998?site_id=90" class="dropdown-item test-selected" data-error-type="on-start-test">Youtube</a>
+                            <a href="http://localhost:998?site_id=76" class="dropdown-item test-selected" data-error-type="on-start-test">Facebook</a>
+                            <a href="http://localhost:998?site_id=75" class="dropdown-item test-selected" data-error-type="on-start-test">Twitter</a>
                             <a href="http://localhost:998" class="dropdown-item test-selected">all</a>
                         </div>
                     </div>
@@ -46,7 +47,26 @@
                             Test selected
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item test-selected test-selected-on-start-test" data-error-type="on-start-test">on-start-test</button>
+                            <button class="dropdown-item test-selected test-selected-on-start-test"
+                                    data-test-type="on-start-test"
+                                    data-domain="172.22.0.5">
+                                on-start-test
+                            </button>
+                            <button class="dropdown-item test-selected test-selected-on-start-test"
+                                    data-test-type="on-start-test-youtube"
+                                    data-domain="www.youtube.com">
+                                on-start-test-youtube
+                            </button>
+                            <button class="dropdown-item test-selected test-selected-on-start-test"
+                                    data-test-type="on-start-test-facebook"
+                                    data-domain="www.facebook.com">
+                                on-start-test-facebook
+                            </button>
+                            <button class="dropdown-item test-selected test-selected-on-start-test"
+                                    data-test-type="on-start-test-twitter"
+                                    data-domain="twitter.com">
+                                on-start-test-twitter
+                            </button>
                             <button class="dropdown-item test-selected test-selected-content-scripts-analyzing" data-error-type="content-scripts-analyzing">content-scripts-analyzing</button>
                         </div>
                     </div>

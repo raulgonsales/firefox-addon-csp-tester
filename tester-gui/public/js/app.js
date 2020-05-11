@@ -114,13 +114,15 @@ jQuery(document).ready(function ($) {
   });
   $('.test-selected.test-selected-on-start-test').on('click', function () {
     var checkedAddons = JSON.parse(window.sessionStorage.getItem('selectedAddons')).addons;
+    var testType = $(this).data('test-type');
+    var domain = $(this).data('domain');
 
     for (var id in checkedAddons) {
       if (checkedAddons.hasOwnProperty(id)) {
         var addonInfo = checkedAddons[id];
         console.log('Addon name: ' + addonInfo.name);
-        console.log('on-start-test testing started.');
-        testAddonBackendCall(addonInfo);
+        console.log(testType + ' testing started.');
+        testAddonBackendCall(addonInfo, testType, domain);
       }
     }
   });
@@ -230,6 +232,7 @@ function getAddonInfoFromCheckbox(checkbox) {
 
 function analyzeAddonContentScript(addonInfo, sitesMatching) {
   $.ajax({
+    async: false,
     method: "POST",
     url: "http://localhost:998/api/backend-call/content-scripts-analysis",
     data: {
@@ -246,7 +249,7 @@ function analyzeAddonContentScript(addonInfo, sitesMatching) {
   });
 }
 
-function testAddonBackendCall(addonInfo) {
+function testAddonBackendCall(addonInfo, testType, domain) {
   $.ajax({
     async: false,
     method: "POST",
@@ -255,7 +258,9 @@ function testAddonBackendCall(addonInfo) {
       addon_name: addonInfo.name,
       addon_file: addonInfo.file,
       addon_link: addonInfo.link,
-      addon_id: addonInfo.id
+      addon_id: addonInfo.id,
+      test_type: testType,
+      domain: domain
     },
     datatype: 'application/json',
     crossDomain: true

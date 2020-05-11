@@ -26,10 +26,12 @@ def test_addon():
     addon_link = request.form['link']
     addon_file = request.form['file']
     addon_id = request.form['id']
+    test_type = request.form['test_type']
+    domain = request.form['domain']
 
     # logger.debug('DEBUG REQUEST: Initial error for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
-    tests.start_on_start_test(addon_file, addon_id)
+    tests.start_on_start_test(addon_file, addon_id, test_type, domain)
 
     resp = make_response('true')
     resp.headers['Access-Control-Allow-Origin'] = '*'

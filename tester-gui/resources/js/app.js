@@ -18,14 +18,16 @@ jQuery( document ).ready(function( $ ) {
 
     $('.test-selected.test-selected-on-start-test').on('click', function () {
         let checkedAddons = JSON.parse(window.sessionStorage.getItem('selectedAddons')).addons;
+        let testType = $(this).data('test-type');
+        let domain = $(this).data('domain');
 
         for (let id in checkedAddons) {
             if (checkedAddons.hasOwnProperty(id)) {
                 let addonInfo = checkedAddons[id];
                 console.log('Addon name: ' + addonInfo.name);
-                console.log('on-start-test testing started.');
+                console.log(testType + ' testing started.');
 
-                testAddonBackendCall(addonInfo);
+                testAddonBackendCall(addonInfo, testType, domain);
             }
         }
     });
@@ -136,6 +138,7 @@ function getAddonInfoFromCheckbox(checkbox) {
 
 function analyzeAddonContentScript(addonInfo, sitesMatching) {
     $.ajax({
+        async: false,
         method: "POST",
         url: "http://localhost:998/api/backend-call/content-scripts-analysis",
         data: {
@@ -153,7 +156,7 @@ function analyzeAddonContentScript(addonInfo, sitesMatching) {
     });
 }
 
-function testAddonBackendCall(addonInfo) {
+function testAddonBackendCall(addonInfo, testType, domain) {
     $.ajax({
         async: false,
         method: "POST",
@@ -162,7 +165,9 @@ function testAddonBackendCall(addonInfo) {
             addon_name: addonInfo.name,
             addon_file: addonInfo.file,
             addon_link: addonInfo.link,
-            addon_id: addonInfo.id
+            addon_id: addonInfo.id,
+            test_type: testType,
+            domain: domain
         },
         datatype: 'application/json',
         crossDomain: true
