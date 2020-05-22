@@ -85,14 +85,12 @@
                             Generate report
                         </button>
                         <div class="dropdown-menu">
-                            <a href="/csp-errors-report" class="dropdown-item">For all</a>
-                            <button class="dropdown-item report-selected" data-error-type="on-start-test">For selected</button>
+                            <a class="dropdown-item" href="/sites-addons-report">Sites statistics</a>
+                            <a class="dropdown-item" href="/on-start-test-report">on-start-test statistics</a>
                         </div>
                     </div>
 
                     <button class="btn btn-info hidden" id="show_all_report">Show report for all</button>
-
-                    <a class="btn btn-success" href="/sites-addons-report">Sites statistics</a>
                 </div>
                 <div class="searchbox">
                     {{--                    TODO bootstrap select--}}
@@ -140,18 +138,6 @@
                                         <a class="btn btn-primary" target="_blank" href="{{$firefoxLink . $addon['link']}}" role="button">Go to web page</a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="error-type">
-                                <p>
-                                    CSP reports count:
-                                    <span class="error-type-content">
-                                        @if(count($addon->cspReports) > 0)
-                                            {{count($addon->cspReports)}}
-                                        @else
-                                            no errors
-                                        @endif
-                                    </span>
-                                </p>
                             </div>
                         </div>
                     </div>

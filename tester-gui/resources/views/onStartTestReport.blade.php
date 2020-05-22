@@ -31,35 +31,6 @@
                        data-name="firefox_recommend" @if(app('request')->input('firefox_recommend'))checked @endif>
             </div>
             <div id="sitesChartContainer"></div>
-            <br><br>
-            @if(isset($siteInfo))
-                <p>Detailed information about site <span class="bold">{{$siteInfo->site_name}} ({{$siteInfo->matching_url}})</span> with list of all of the addons affecting injecting of content scripts into the site. </p>
-                <p>All addons are analyzed and signs of script injecting were recognized.</p>
-                <table class="table table-bordered">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Users</th>
-                        <th>Is recommended by Firefox</th>
-                        <th>Matching scripts count (with signs)</th>
-                        <th>Download <span class="bold">.XPI</span> file</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($siteInfo->relatedAddonsWithScriptSigns as $addon)
-                        <tr>
-                            <td>{{$addon->id}}</td>
-                            <td><a href="https://addons.mozilla.org{{$addon->link}}">{{$addon->name}}</a></td>
-                            <td>{{$addon->users_count}}</td>
-                            <td>{{$addon->firefox_recommend}}</td>
-                            <td>{{$addon->pivot->content_scripts_count}} ({{$addon->pivot->content_scripts_count_with_signs}})</td>
-                            <td><a href="https://firefox-addons-tester.s3.eu-central-1.amazonaws.com/addons-files/{{$addon->file_name}}">Download</a></td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @endif
         </section>
     </body>
 
@@ -87,10 +58,10 @@
         window.onload = function() {
             var chart = new CanvasJS.Chart("sitesChartContainer", {
                 animationEnabled: true,
-                height: 650,
+                height: 400,
                 title:{
-                    text: "Count of extensions that have signs of script injection in their content scripts",
-                    fontSize: 24
+                    text: "Count of addons causing CSP errors when a user enters the web page containing the CSP header",
+                    fontSize: 20
                 },
                 axisY: {
                     title: "Extensions count",
@@ -106,7 +77,7 @@
                     maintainAspectRatio: false,
                 },
                 data: [{
-                    type: "bar",
+                    type: "column",
                     indexLabel: "{y}",
                     indexLabelPlacement: "inside",
                     indexLabelFontWeight: "bolder",

@@ -7,6 +7,7 @@ use App\CspReport;
 use App\Models\Enum\TestTypesEnum;
 use App\Site;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Psy\Util\Json;
 
 class ReportController extends Controller
@@ -75,6 +76,52 @@ class ReportController extends Controller
 
         return response(
             view('sitesAddonsReport')->with($data)
+        );
+    }
+
+    public function getReportForOnStartTest(Request $request)
+    {
+        if (!isset($request->firefox_recommend)) {
+            $firefoxRecommend = null;
+        }
+        $firefoxRecommend = $request->firefox_recommend;
+
+        $testTypes = [
+            'on-start-test',
+            'on-start-test-youtube',
+            'on-start-test-facebook',
+            'on-start-test-twitter'
+        ];
+
+        $data['graphDataPoints'] = [];
+
+        foreach ($testTypes as $type) {
+            if (!$firefoxRecommend) {
+                $value = CspReport::groupBy('addon_id')
+                    ->select('addon_id')
+                    ->where('test_type', $type)
+                    ->get()
+                    ->count();
+            } else {
+                $value = CspReport::groupBy('addon_id')
+                    ->select('addon_id')
+                    ->where('test_type', $type)
+                    ->leftJoin('addons', 'csp_reports.addon_id', '=', 'addons.id')
+                    ->where('firefox_recommend', 1)
+                    ->whereNotNull('addons.id')
+                    ->get()
+                    ->count();
+            }
+
+            $data['graphDataPoints'][] = [
+                'y' => $value,
+                'label' => $type,
+                'indexLabelFontSize' => 15
+            ];
+        }
+
+        return response(
+            view('onStartTestReport')->with($data)
         );
     }
 }
