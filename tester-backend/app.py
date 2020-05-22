@@ -1,35 +1,20 @@
 # flask_web/app.py
-
 from flask import Flask
 from flask import make_response
 from flask import request
-import logging
 import json
 
 from lib import tests
 
 app = Flask(__name__)
 
-logger = logging.getLogger('tester_backend')
-logger.setLevel(logging.DEBUG)
-fh_debug = logging.FileHandler('logs/debug.log')
-fh_debug.setLevel(logging.DEBUG)
-logger.addHandler(fh_debug)
-
 
 @app.route('/test/on-start-test', methods=["POST"])
 def test_addon():
-    if request.method != 'POST':
-        logger.error('ERROR: Unsupported call method!')
-
-    addon_name = request.form['name']
-    addon_link = request.form['link']
     addon_file = request.form['file']
     addon_id = request.form['id']
     test_type = request.form['test_type']
     domain = request.form['domain']
-
-    # logger.debug('DEBUG REQUEST: Initial error for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
     tests.start_on_start_test(addon_file, addon_id, test_type, domain)
 
@@ -40,15 +25,8 @@ def test_addon():
 
 @app.route('/test/content-scripts-analysis', methods=["POST"])
 def analyze_addons_content_scripts():
-    if request.method != 'POST':
-        logger.error('ERROR: Unsupported call method!')
-
-    addon_name = request.form['name']
-    addon_link = request.form['link']
     addon_file = request.form['file']
     sites_matching = request.form['sites_matching']
-
-    # logger.debug('DEBUG REQUEST: Content script analyzing for addon:\n\tname - ' + addon_name + '\n\tfile - ' + addon_file + '\n\tlink - ' + addon_link)
 
     response = tests.analyze(addon_file, json.loads(sites_matching))
 

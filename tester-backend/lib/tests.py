@@ -10,7 +10,6 @@ import shutil
 import zipfile
 import codecs
 import fnmatch, re
-import string
 
 load_dotenv()
 
