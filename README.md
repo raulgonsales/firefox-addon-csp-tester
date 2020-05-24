@@ -15,6 +15,17 @@ web sites to provide the `manifest.json` analysis.
 2. Run the application with all tests provided. Full statistic is present.
 
         ./run_final_app.sh
+        
+##Information
+Scripts above run following command: 
+
+`cat > ./tester-gui/.env ./tester-gui/docker/.env`
+
+After building and running the application, rhe `.env` file in root directory will be always 
+overridden by `.env` file in `docker` folder for implementation purposes. 
+All persistent changes to environment variables have to be provided by changing
+`./tester-gui/docker/.env` file and rebuilding containers by commands above. 
+Not persistent changes can be make into `.env` in the root folder. 
 
 ## Usage
 
