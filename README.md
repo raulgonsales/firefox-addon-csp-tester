@@ -36,7 +36,7 @@ Not persistent changes can be make into `.env` in the root folder.
 Extracts all information about extensions from the `addons.mozilla.org`. Enabled parameter `--download-files` triggers
 downloading archived source code of an extension in `.XPI` format. The application stores each archive into AWS S3 bucket.
 
-    php artisan downloader:addons-info --start-page=3 --final-page=5 --download-files
+    php artisan downloader:addons-info --start-page=1 --final-page=753 --download-files
     
 The command below goes through the `addons` database table and only downloads archived source code and uploads it to AWS S3. 
     
