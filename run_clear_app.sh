@@ -23,3 +23,19 @@ docker exec -i db mysql -e "DROP DATABASE IF EXISTS laravel; CREATE DATABASE lar
 
 docker exec -i app php artisan migrate
 docker exec -i app php artisan db:seed
+
+
+NGINX_IP=$(docker exec -i backend getent hosts nginx | awk '{ print $1 ; exit }')
+docker exec -i backend sh -c "cat >> /etc/hosts <<EOF
+$NGINX_IP www.youtube.com
+$NGINX_IP www.facebook.com
+$NGINX_IP twitter.com
+
+EOF"
+
+
+cat > ./tester-gui/.env ./tester-gui/docker/.env
+docker exec -i app sh -c "cat >> .env <<EOF
+NGINX_IP=$NGINX_IP
+
+EOF"

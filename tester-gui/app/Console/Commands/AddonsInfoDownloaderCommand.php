@@ -45,7 +45,7 @@ final class AddonsInfoDownloaderCommand extends Downloader
     {
         parent::__construct();
         $this->startPage = 1;
-        $this->finalPage = 753;
+        $this->finalPage = 1;
         $this->downloadFiles = true;
     }
 

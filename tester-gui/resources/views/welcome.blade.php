@@ -49,7 +49,7 @@
                         <div class="dropdown-menu">
                             <button class="dropdown-item test-selected test-selected-on-start-test"
                                     data-test-type="on-start-test"
-                                    data-domain="172.22.0.5">
+                                    data-domain="{{env('NGINX_IP')}}">
                                 on-start-test
                             </button>
                             <button class="dropdown-item test-selected test-selected-on-start-test"

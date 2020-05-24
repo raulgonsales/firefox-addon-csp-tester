@@ -16,7 +16,7 @@ class TestController extends Controller
 
         return response(view('testing-pages.page'), 200)->header(
             "Content-Security-Policy",
-            "script-src 'none'; report-uri http://172.22.0.5/api/store-csp-reports/" . $request->test_type . '/' . $request->addon_id
+            "script-src 'none'; report-uri http://" . env('NGINX_IP') . "/api/store-csp-reports/" . $request->test_type . '/' . $request->addon_id
         );
     }
 }
