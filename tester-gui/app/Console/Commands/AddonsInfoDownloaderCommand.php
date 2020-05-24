@@ -18,20 +18,20 @@ final class AddonsInfoDownloaderCommand extends Downloader
      *
      * @var string
      */
-    protected $signature = 'downloader:addons-info';
+    protected $signature = 'downloader:addons-info {--start-page=1} {--final-page=753} {--download-files}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Downloads addon's information from Mozilla Firefox store.";
+    protected $description = "Downloads extensions information from the AMO.";
 
     /** @var integer */
     private $startPage;
 
     /** @var integer */
-    private $finalPage = 0;
+    private $finalPage;
 
     /** @var bool */
     private $downloadFiles;
@@ -44,9 +44,6 @@ final class AddonsInfoDownloaderCommand extends Downloader
     public function __construct()
     {
         parent::__construct();
-        $this->startPage = 1;
-        $this->finalPage = 1;
-        $this->downloadFiles = true;
     }
 
     /**
@@ -57,6 +54,14 @@ final class AddonsInfoDownloaderCommand extends Downloader
      */
     public function handle()
     {
+        $this->startPage = $this->option('start-page');
+        $this->finalPage = $this->option('final-page');
+        $this->downloadFiles = (bool) $this->option('download-files');
+        if ($this->finalPage < $this->startPage) {
+            echo "\e[31mFinal page has to bigger than start page \e[97m\n";
+            exit();
+        }
+
         $page = $this->startPage;
 
         echo "\e[97mStarted downloading addon's information from the store\n";

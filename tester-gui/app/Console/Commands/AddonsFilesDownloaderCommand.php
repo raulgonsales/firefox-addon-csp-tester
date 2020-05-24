@@ -20,7 +20,7 @@ final class AddonsFilesDownloaderCommand extends Downloader
      *
      * @var string
      */
-    protected $description = "Downloads addon's files from Mozilla Firefox store.";
+    protected $description = "Downloads extension files from the AMO.";
 
     /**
      * Create a new command instance.
