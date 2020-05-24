@@ -16,7 +16,7 @@ web sites to provide the `manifest.json` analysis.
 
         ./run_final_app.sh
 
-##Information
+## Information
 Scripts above run following command: 
 
 `cat > ./tester-gui/.env ./tester-gui/docker/.env`
