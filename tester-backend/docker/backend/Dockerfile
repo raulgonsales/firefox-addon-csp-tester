@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     curl unzip wget \
     xvfb iputils-ping
 
-
 # install geckodriver and firefox
 
 RUN GECKODRIVER_VERSION=`curl https://github.com/mozilla/geckodriver/releases/latest | grep -Po 'v[0-9]+.[0-9]+.[0-9]+'` && \
@@ -22,14 +21,6 @@ RUN FIREFOX_SETUP=firefox-setup.tar.bz2 && \
     tar xjf $FIREFOX_SETUP -C /opt/ && \
     ln -s /opt/firefox/firefox /usr/bin/firefox && \
     rm $FIREFOX_SETUP
-
-
-# install phantomjs
-
-RUN wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-    tar -jxf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-    cp phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs && \
-    rm phantomjs-2.1.1-linux-x86_64.tar.bz2
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt requirements.txt
