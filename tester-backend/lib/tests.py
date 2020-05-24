@@ -25,8 +25,17 @@ local_addons_folder = '/usr/src/app/resources/addons/'
 
 
 def start_on_start_test(addon_file, addon_id, test_type, domain):
+    """
+    Start on-start-test
+    :param addon_file:
+    :param addon_id:
+    :param test_type:
+    :param domain:
+    :return:
+    """
     download_addon_file(addon_file)
 
+    # run Selenium test
     options = Options()
     options.headless = True
     browser = webdriver.Firefox(options=options)
@@ -39,6 +48,12 @@ def start_on_start_test(addon_file, addon_id, test_type, domain):
 
 
 def analyze(addon_file, sites_matching):
+    """
+    Starts manifest.json analysis
+    :param addon_file:
+    :param sites_matching:
+    :return:
+    """
     download_result = download_addon_file(addon_file)
 
     if not download_result:
@@ -56,7 +71,7 @@ def analyze(addon_file, sites_matching):
     with codecs.open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', 'r', 'utf-8-sig') as openfile:
         try:
             json_object = json.load(openfile)
-        except json.JSONDecodeError:
+        except json.JSONDecodeError: # if error open file, try to preprocess it (delete comments)
             old_manifest = open('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json', "r")
             os.remove('/usr/src/app/resources/addons/unziped/' + addon_file + '/manifest.json')
 
@@ -83,6 +98,7 @@ def analyze(addon_file, sites_matching):
 
     sites_info = {}
 
+    # iterate all sites from request from web application
     for site_id in sites_matching:
         matching_url = sites_matching[site_id]
         sites_info[site_id] = False
@@ -93,6 +109,7 @@ def analyze(addon_file, sites_matching):
         content_scripts_batches = []
         run_at = None
         for content_script_item in json_object['content_scripts']:
+            # some validation
             if 'matches' not in content_script_item:
                 continue
             if matching_url not in content_script_item['matches'] and not find_matching_url(matching_url, content_script_item['matches']):
@@ -121,10 +138,12 @@ def analyze(addon_file, sites_matching):
                 if script in scripts_info:
                     continue
 
+                # start analysis of source code
                 scripts_info[script] = process_script(addon_unzipped_dirpath + '/' + script, batch['run_at'])
                 if scripts_info[script] is not False:
                     scripts_with_signs_count += 1
 
+        # return structured json with all statistic
         sites_info[site_id] = {
             "use_content_scripts": True,
             "run_at": run_at,
@@ -133,6 +152,7 @@ def analyze(addon_file, sites_matching):
             "scripts_info": scripts_info
         }
 
+    # delete all files
     delete_addon_unzipped_files(addon_file)
     delete_addon_file(addon_file)
 
@@ -153,6 +173,12 @@ def find_matching_url(find_url, urls):
 
 
 def process_script(script_path, run_at):
+    """
+    Finds signs of script injection in content script of an extension
+    :param script_path:
+    :param run_at:
+    :return:
+    """
     script_injecting_signs = [
         "injectScript(",
         "insertScript(",
@@ -208,6 +234,11 @@ def process_script(script_path, run_at):
 
 
 def download_addon_file(file_name):
+    """
+    Downloads extension's archived file from AWS S3
+    :param file_name:
+    :return:
+    """
     if os.path.exists(local_addons_folder + file_name):
         return True
 
@@ -221,6 +252,11 @@ def download_addon_file(file_name):
 
 
 def delete_addon_file(file_name):
+    """
+    Deletes file from localhost
+    :param file_name:
+    :return:
+    """
     if os.path.exists(local_addons_folder + file_name):
         os.remove(local_addons_folder + file_name)
 
@@ -231,6 +267,11 @@ def delete_addon_unzipped_files(file_name):
 
 
 def unzip_addon(addon_file):
+    """
+    Unzips archived extension's source code
+    :param addon_file:
+    :return:
+    """
     unzipped_dirpath = '/usr/src/app/resources/addons/unziped/'
 
     if not os.path.isdir(unzipped_dirpath):

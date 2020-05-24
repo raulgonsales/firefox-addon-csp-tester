@@ -11,11 +11,16 @@ app = Flask(__name__)
 
 @app.route('/test/on-start-test', methods=["POST"])
 def test_addon():
+    """
+    API endpoint for running on-start-test
+    """
+
     addon_file = request.form['file']
     addon_id = request.form['id']
     test_type = request.form['test_type']
     domain = request.form['domain']
 
+    # start test
     tests.start_on_start_test(addon_file, addon_id, test_type, domain)
 
     resp = make_response('true')
@@ -25,6 +30,9 @@ def test_addon():
 
 @app.route('/test/content-scripts-analysis', methods=["POST"])
 def analyze_addons_content_scripts():
+    """
+    API endpoint for running manifest.json analysis
+    """
     addon_file = request.form['file']
     sites_matching = request.form['sites_matching']
 
