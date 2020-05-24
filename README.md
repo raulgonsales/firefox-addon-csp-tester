@@ -15,7 +15,7 @@ web sites to provide the `manifest.json` analysis.
 2. Run the application with all tests provided. Full statistic is present.
 
         ./run_final_app.sh
-        
+
 ##Information
 Scripts above run following command: 
 
